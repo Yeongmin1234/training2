@@ -28,8 +28,17 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.list(cri);
 	}
 	@Override
+	public List<BoardVO> pinList(Criteria cri) {
+		return mapper.pinList(cri);
+	}
+	@Override
 	public List<BoardVO> eachList(Criteria cri) {
 		return mapper.eachList(cri);
+	}
+	
+	@Override
+	public List<BoardVO> pinEachList(Criteria cri) {
+		return mapper.pinEachList(cri);
 	}
 	
 	@Override

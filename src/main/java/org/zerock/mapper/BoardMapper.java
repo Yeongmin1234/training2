@@ -9,7 +9,9 @@ import org.zerock.domain.Criteria;
 
 public interface BoardMapper {
 	public List<BoardVO> list(Criteria cri);
+	public List<BoardVO> pinList(Criteria cri);
 	public List<BoardVO> eachList(Criteria cri);
+	public List<BoardVO> pinEachList(Criteria cri);
 	public int totalCount(Criteria cri);
 	public int etotalCount(Criteria cri);
 	public void create(BoardVO vo);

@@ -16,5 +16,6 @@ public class BoardVO {
 	private int replyCnt;
 	private int hit;
 	private String cate;
+	private int pin;
 	private List<BoardAttachVO> AttachList;
 }

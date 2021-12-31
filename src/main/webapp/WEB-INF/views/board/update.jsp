@@ -543,14 +543,16 @@
 		            	</table>
 	            	 </div>
 	       	    	 <div>
-	                    <button type="submit" class="button" style="position:absolute;bottom:-30px;right: 80px;" onclick="save()">등록</button>
-	                    <div><a class="button" href="/board/list" style="position:absolute;bottom:-30px;right: 30px;">취소</a></div>
+	                    <button type="submit" class="button modify" style="position:absolute;bottom:-30px;right: 80px;" onclick="save()">등록</button>
+	                    <div><a class="button close" href="/board/list" style="position:absolute;bottom:-30px;right: 30px;">취소</a></div>
 	                 </div>
                 	</div>
                 </form>
             </div>
         </div>
         <script>
+        $(".close").click(function(){if(confirm("취소 하시겠습니까?")){return true;}else{return false}});
+        $(".modify").click(function(){if(confirm("저장 하시겠습니까?")){return true;}else{return false}});
 	  	  $("button[type='submit']").on("click",function(e){
 		      		var title=$("#title").val();
 					var text=$("#txtContent").val();

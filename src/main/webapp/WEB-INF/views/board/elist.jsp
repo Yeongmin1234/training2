@@ -120,25 +120,43 @@
 	                        <h3>조회수</h3>
 	                    </div> <!--.boardListIn-->
 	                    <ul>
+	                     <c:forEach var="boardlist" items="${pinList}">
+		                        <li>
+		                            <p class="bno"><img src="/resources/images/bell.png" width="25px" height="25px" style="position: absolute;top: 5px;left: -2px;"></p>
+		                            <p class="cate">
+		                            	<c:choose>
+				                    		<c:when test="${boardlist.cate=='0'}">
+						                    	<c:out value="공지" />
+				                    		</c:when>
+				                        	<c:otherwise>
+				                        		 <c:out value="${boardlist.cate}등급" />
+					                        </c:otherwise>	
+					                    </c:choose>
+		                            </p>
+		                            <p class="title"><a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]</p>
+		                            <p class="writer"><a href="#">${boardlist.writer}</a></p>
+		                            <p class="date"><fmt:formatDate value="${boardlist.date}" pattern="yyyy/MM/dd"/></p>
+		                            <p class="hit">${boardlist.hit}</p>
+		                        </li>
+	                        </c:forEach>
 	                        <c:forEach var="boardlist" items="${list}">
-	                        <li>
-	                            <p class="bno">${boardlist.bno}</p>
-	                            <p class="cate">
-	                            	<c:choose>
-			                    		<c:when test="${boardlist.cate=='0'}">
-			                    			<c:out value="공지" />
-			                    		</c:when>
-			                        	<c:otherwise>
-			                        		 <c:out value="${boardlist.cate}등급" />
-				                        </c:otherwise>	
-				                    </c:choose>
-	                            </p>
-	                            <p class="title"><a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]</p>
-	                            <p class="writer"><a href="#">${boardlist.writer}</a></p>
-	                            <p class="date"><fmt:formatDate value="${boardlist.date}" pattern="yyyy/MM/dd"/></p>
-	                            <p class="hit">${boardlist.hit}</p>
-	                            
-	                        </li>
+		                        <li>
+		                            <p class="bno">${boardlist.bno}</p>
+		                            <p class="cate">
+				                    	<c:choose>
+				                    		<c:when test="${boardlist.cate=='0'}">
+						                    	<c:out value="공지" />
+				                    		</c:when>
+				                        	<c:otherwise>
+				                        		 <c:out value="${boardlist.cate}등급" />
+					                        </c:otherwise>	
+					                    </c:choose>	
+		                            </p>
+		                            <p class="title"><a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]</p>
+		                            <p class="writer"><a href="#">${boardlist.writer}</a></p>
+		                            <p class="date"><fmt:formatDate value="${boardlist.date}" pattern="yyyy/MM/dd"/></p>
+		                            <p class="hit">${boardlist.hit}</p>
+		                        </li>
 	                        </c:forEach>
 	                    </ul>
 	                </div> <!--.boardList-->

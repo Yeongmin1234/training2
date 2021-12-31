@@ -3,6 +3,9 @@ package org.zerock.controller;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -40,12 +43,15 @@ public class BoardController {
 	
 	@GetMapping("list")
 	public void list(Model model,Criteria cri) {
+		model.addAttribute("pinList", service.pinList(cri));
 		model.addAttribute("list", service.list(cri));
 		int total= service.totalCount(cri);
 		model.addAttribute("pageMaker", new PageDTO(cri,total));
 	}
+	
 	@GetMapping("elist")
 	public void eachList(Model model,Criteria cri) {
+		model.addAttribute("pinList", service.pinEachList(cri));
 		model.addAttribute("list", service.eachList(cri));
 		int total= service.etotalCount(cri);
 		model.addAttribute("pageMaker", new PageDTO(cri,total));
@@ -94,6 +100,7 @@ public class BoardController {
 		if(service.delete(bno)==1) {
 			deleteFile(attachList);
 		}
+		
 		return "redirect:/board/list";
 	}
 

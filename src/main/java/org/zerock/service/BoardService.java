@@ -11,7 +11,9 @@ import lombok.Data;
 
 public interface BoardService {
 	public List<BoardVO> list(Criteria cri);
+	public List<BoardVO> pinList(Criteria cri);
 	public List<BoardVO> eachList(Criteria cri);
+	public List<BoardVO> pinEachList(Criteria cri);
 	public int totalCount(Criteria cri);
 	public int etotalCount(Criteria cri);
 	public void create(BoardVO vo);

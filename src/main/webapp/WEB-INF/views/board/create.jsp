@@ -510,8 +510,8 @@
 								</td>
 		            	 	</tr>
 		            	 	<tr><th>제목</th><td colspan='3'><input type="text" id="title" name="title" style="outline:none;width: 600px;border: 1px solid #ababab;" placeholder="제목을 입력해주세요." />  
-		            	 			<span style="display: none;">
-                                        <input type="checkbox" id="fixedTop" name="" />
+		            	 			<span style="">
+                                        <input type="checkbox" id="fixedTop" name="pin" value="0"/>
                                         <label for="fixedTop">상단 고정 <i class="checkbox"></i></label>
                                     </span></td></tr>
 		            	 	<tr style="height:200px">
@@ -543,14 +543,23 @@
 	            	 </div>
 	       	    	 <div>
 	                    <button type="submit" class="button" style="position:absolute;bottom:-30px;right: 80px;" onclick="save()">등록</button>
-	                    <div><a class="button" href="/board/list" style="position:absolute;bottom:-30px;right: 30px;">취소</a></div>
+	                    <div><a class="button close" href="/board/list" style="position:absolute;bottom:-30px;right: 30px;">취소</a></div>
 	                 </div>
                 	</div>
                 </form>
             </div>
         </div>
         <script>
-	  	  $("button[type='submit']").on("click",function(e){
+        var now = new Date();
+        var yesterday = new Date(now.setDate(now.getDate() - 1));
+        $('#fixedTop').click(function(){
+	        var checked=$("#fixedTop").is(':checked');
+	        if(checked){alert(yesterday); $("#fixedTop").val("1")}else{ $("#fixedTop").val("0")}
+        });
+        
+        
+        $(".close").click(function(){if(confirm("취소 하시겠습니까?")){return true;}else{return false}})
+	  	$("button[type='submit']").on("click",function(e){
 		      		var title=$("#title").val();
 					var text=$("#txtContent").val();
 					

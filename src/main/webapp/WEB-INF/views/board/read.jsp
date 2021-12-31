@@ -103,8 +103,8 @@
 		            	 </div>
 	       	    		 <div>
 	                    	<ul class="utils__list">
-	                        	<li><a style="color: #333;right: 90px;top: 15px;position: absolute;" href="/board/update?bno=${read.bno}">수정</a></li>
-	                            <li><a style="color: #333;right: 35px;top: 15px;position: absolute;" href="/board/delete?bno=${read.bno}">삭제</a></li>
+	                        	<li><a class="modify" style="color: #333;right: 90px;top: 15px;position: absolute;" href="/board/update?bno=${read.bno}">수정</a></li>
+	                            <li><a class="remove" style="color: #333;right: 35px;top: 15px;position: absolute;" href="/board/delete?bno=${read.bno}">삭제</a></li>
 							</ul>
 	                     </div>
 		           	 		<div class="board_reply">
@@ -121,5 +121,8 @@
                 </div>
             </div>
         </div>
+        <script>
+        	$(".remove").click(function(){if(confirm("삭제 하시겠습니까?")){return true;}else{return false}});
+        </script>
     </body>
 </html>

@@ -8,7 +8,7 @@
 
 
 	<select id="list" resultType="org.zerock.domain.BoardVO">
-	select bno, title, writer, text, date,replyCnt,hit,cate
+	select bno, title, writer, text, date,replyCnt,hit,cate,pin
 		from (
 			select @rownum:=@rownum+1 as rownum, b.* 
 			from (
@@ -19,6 +19,7 @@
 		<![CDATA[
 			where rownum > (#{pageNum} - 1) * #{amount} and rownum <= #{pageNum} * #{amount}
 		]]>
+		 and pin=0
 		<choose>
 			<when test="type=='T'.toString()">	<!-- ''은 char 타입이라서 .toString() 적용 -->
 				and title like concat('%', #{keyword}, '%')  <!-- concat : 문자열을 이어주는 mysql 함수 -->	
@@ -30,7 +31,30 @@
 				and writer like concat('%', #{keyword}, '%')	
 			</when>
 		</choose>
+	</select>	
 	
+	<select id="pinList" resultType="org.zerock.domain.BoardVO">
+	select bno, title, writer, text, date,replyCnt,hit,cate,pin
+		from (
+			select @rownum:=@rownum+1 as rownum, b.* 
+			from (
+				select @rownum:=0
+				) as tmp, board as b
+			order by date desc, pin desc limit 3
+		) as boardlist	
+			where pin=1
+		<choose>
+			<when test="type=='T'.toString()">	<!-- ''은 char 타입이라서 .toString() 적용 -->
+				and title like concat('%', #{keyword}, '%')  <!-- concat : 문자열을 이어주는 mysql 함수 -->	
+			</when>
+			<when test="type=='C'.toString()">
+				and text like concat('%', #{keyword}, '%')
+			</when>
+			<when test="type=='W'.toString()">
+				and writer like concat('%', #{keyword}, '%')	
+			</when>
+		</choose>
+		order by date desc
 	</select>	
 
 
@@ -39,7 +63,7 @@
 
 
 	<select id="eachList" resultType="org.zerock.domain.BoardVO">
-	select  bno, title, writer, text, date,replyCnt,hit,cate
+	select  bno, title, writer, text, date,replyCnt,hit,cate,pin
 		from (
 			select @rownum:=@rownum+1 as rownum, b.* 
 			from (
@@ -48,6 +72,7 @@
 			order by bno desc
 		) as boardlist	
 		where cate = #{cate}
+		and pin=0
 		<![CDATA[
  			and rownum > (#{pageNum} - 1) * #{amount} and rownum <= #{pageNum} * #{amount}
 		]]> 
@@ -65,6 +90,30 @@
 	</select>	
 	
 	
+	<select id="pinEachList" resultType="org.zerock.domain.BoardVO">
+	select  bno, title, writer, text, date,replyCnt,hit,cate,pin
+		from (
+			select @rownum:=@rownum+1 as rownum, b.* 
+			from (
+				select @rownum:=0
+				) as tmp, board as b
+			order by date desc, pin desc limit 3
+		) as boardlist	
+<!-- 		where cate = #{cate} -->
+		where pin=1
+		<choose>
+			<when test="type=='T'.toString()">	
+			and title like concat('%', #{keyword}, '%') 	
+			</when>
+			<when test="type=='C'.toString()">
+				and text like concat('%', #{keyword}, '%')
+			</when>
+			<when test="type=='W'.toString()">
+				and writer like concat('%', #{keyword}, '%')	
+			</when>
+		</choose>
+		order by date desc
+	</select>	
 	
 	
 	
@@ -73,12 +122,37 @@
 	
 	<select id="totalCount" resultType="int">
 		select count(*) from board where bno>0
+		<choose>
+			<when test="type=='T'.toString()">	
+				and title like concat('%', #{keyword}, '%') 	
+			</when>
+			<when test="type=='C'.toString()">
+				and text like concat('%', #{keyword}, '%')
+			</when>
+			<when test="type=='W'.toString()">
+				and writer like concat('%', #{keyword}, '%')	
+			</when>
+		</choose>
 	</select>
+	
 	<select id="etotalCount" resultType="int">
-		select count(*) from board where cate=#{cate}
+		select count(*) from board where  bno>0 and cate=#{cate}
+		<choose>
+			<when test="type=='T'.toString()">	
+				and title like concat('%', #{keyword}, '%') 	
+			</when>
+			<when test="type=='C'.toString()">
+				and text like concat('%', #{keyword}, '%')
+			</when>
+			<when test="type=='W'.toString()">
+				and writer like concat('%', #{keyword}, '%')	
+			</when>
+		</choose>
 	</select>
+	
+	
 	<insert id="create">
-		insert into board (title,text) values(#{title},#{text});
+		insert into board (title,text,pin) values(#{title},#{text},#{pin});
 		<selectKey keyProperty="bno" order="AFTER" resultType="int">
 			select max(bno) from board
 		</selectKey>
@@ -89,8 +163,7 @@
 	<update id="update">
 		update board
 		set title=#{title},
-			text=#{text},
-			thumbnail=#{thumbnail}
+			text=#{text}
 		where bno=#{bno}
 	</update>
 	<delete id="delete">
@@ -98,7 +171,7 @@
 	</delete>
 	<update id="updateReplyCnt">
 		update board
-		set replycnt = replycnt + #{amount} 
+		set replycnt = replycnt + #{amount}
 		where bno = #{bno}
 	</update>
 	<update id="updateHit">
