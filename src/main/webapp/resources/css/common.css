@@ -1,4 +1,4 @@
-@charset "UTF-8";
+@charset "utf-8";
 @import url(https://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 *,
 html,
@@ -725,7 +725,7 @@ h1 a img {
   width: 17px;
   height: 19px;
   padding-right: 10px;
-  background: url("../img/logout.png") no-repeat;
+/*   background: url("../img/logout.png") no-repeat; */
   display: inline-block;
   vertical-align: -4px;
 }
@@ -755,21 +755,21 @@ h1 a img {
   background-size: 100% 100%;
 }
 
-.fast-menu__el-1 {
-  background-image: url("../img/fast_menu1.png");
-}
+/* .fast-menu__el-1 { */
+/*   background-image: url("../img/fast_menu1.png"); */
+/* } */
 
-.fast-menu__el-1:hover, .fast-menu__el-1:focus {
-  background-image: url("../img/fast_menu1_on.png");
-}
+/* .fast-menu__el-1:hover, .fast-menu__el-1:focus { */
+/*   background-image: url("../img/fast_menu1_on.png"); */
+/* } */
 
-.fast-menu__el-2 {
-  background-image: url("../img/fast_menu2.png");
-}
+/* .fast-menu__el-2 { */
+/*   background-image: url("../img/fast_menu2.png"); */
+/* } */
 
-.fast-menu__el-2:hover, .fast-menu__el-2:focus {
-  background-image: url("../img/fast_menu2_on.png");
-}
+/* .fast-menu__el-2:hover, .fast-menu__el-2:focus { */
+/*   background-image: url("../img/fast_menu2_on.png"); */
+/* } */
 
 .header_search {
   height: 33px;
@@ -879,7 +879,7 @@ h1 a img {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
-  background: url("../img/toggle_02.png") no-repeat;
+/*   background: url("../img/toggle_02.png") no-repeat; */
 }
 
 .nav li.on h4 {
@@ -893,49 +893,49 @@ h1 a img {
 }
 
 .nav li:nth-child(1) > h4 > a:before {
-  background: url("../img/icon.png") no-repeat left top;
+/*   background: url("../img/icon.png") no-repeat left top; */
   width: 20px;
   height: 22px;
 }
 
 .nav li:nth-child(2) > h4 > a:before {
-  background: url("../img/icon.png") no-repeat left -66px;
+/*   background: url("../img/icon.png") no-repeat left -66px; */
   width: 20px;
   height: 26px;
 }
 
 .nav li:nth-child(3) > h4 > a:before {
-  background: url("../img/icon.png") no-repeat left -135px;
+/*   background: url("../img/icon.png") no-repeat left -135px; */
   width: 19px;
   height: 20px;
 }
 
 .nav li:nth-child(4) > h4 > a:before {
-  background: url("../img/icon.png") no-repeat left -199px;
+/*   background: url("../img/icon.png") no-repeat left -199px; */
   width: 19px;
   height: 21px;
 }
 
 .nav li:nth-child(5) > h4 > a:before {
-  background: url("../img/icon.png") no-repeat left -264px;
+/*   background: url("../img/icon.png") no-repeat left -264px; */
   width: 19px;
   height: 22px;
 }
 
 .nav li:nth-child(6) > h4 > a:before {
-  background: url("../img/icon.png") no-repeat left -333px;
+/*   background: url("../img/icon.png") no-repeat left -333px; */
   width: 19px;
   height: 26px;
 }
 
 .nav li:nth-child(7) > h4 > a:before {
-  background: url("../img/icon.png") no-repeat left -403px;
+/*   background: url("../img/icon.png") no-repeat left -403px; */
   width: 18px;
   height: 21px;
 }
 
 .nav li:nth-child(8) > h4 > a:before {
-  background: url("../img/icon.png") no-repeat left -468px;
+/*   background: url("../img/icon.png") no-repeat left -468px; */
   width: 19px;
   height: 20px;
 }

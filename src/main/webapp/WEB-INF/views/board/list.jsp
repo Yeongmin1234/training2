@@ -19,8 +19,8 @@
         <script src="/resources/js/jquery.drawDoughnutChart.js"></script>
         <script type="text/javascript" src="/resources/js/list.js"></script>
         <script src="/resources/js/intra.js"></script>
-        <title>intranet</title>
-        <style>.active{font-weight: bold;}</style>
+        <title>document</title>
+        <style>.active{font-weight: bold;}.cateTxt p{margin-bottom:12px;}</style>
         <script>
             $(document).ready(function () {
                 $('#doughnutChart').drawDoughnutChart([
@@ -43,27 +43,26 @@
                     </a>
                 </h1>
                 <div class="box">
-                <div  style="position:relative;">
-                   <p>
-                       <strong><span>000&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
-                       <em>3등급</em>
-                   </p>
-                    <p style="position:absolute;top:0;right:-307px;"><a href="javascript:void(0);" title="로그아웃">로그아웃</a></p>
-                </div>    
-                     
-                    <ul class="fast-menu">
-                        <li><a class="fast-menu__el-1" href="javascript:void(0);" title=""></a></li>
-                        <li><a class="fast-menu__el-2" href="javascript:void(0);" title=""></a></li>
-                    </ul>
+	                <div  style="position:relative;">
+	                   <p>
+	                       <strong><span>000&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
+	                       <em class="cateInfo">3등급</em>
+	                   </p>
+	                    <p style="position:absolute;top:0;right:-307px;"><a href="javascript:void(0);" title="로그아웃">로그아웃</a></p>
+	                </div>    
                 </div>
-                  <div class="search" style="position: absolute;top: 39px;right: 154px;">
+                  <div class="search" style="position: absolute;top: 39px;right: 137px;">
 	                    <div>
-	                        <form action="" method="">
-	                            <select style="width: 100px;font-size: 11px;">
-	                                <option>통합검색</option>
-	                            </select>
-	                            <input type="text" style="border: 1px solid #4a4a4a;outline:none;">
-	                            <button class="btn btn-primary">검&nbsp;색</button>		
+	                        <form>
+<!-- 	                        <form id="searchForm" action="/board/list" method="get"> -->
+<!-- 	                            <select style="display:none" name="type"> -->
+<%-- 	                                <option value="TC" <c:out value="${pageMaker.cri.type=='TC'?'selected':''}" />>제목+내용</option> --%>
+<!-- 	                            </select> -->
+<%-- 	                            <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}"> --%>
+<%-- 	                            <input type="hidden" name="amount" value="${pageMaker.cri.amount}">	 --%>
+<%-- 	                            <input type="text" name="keyword" value="${pageMaker.cri.keyword}" style="border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색"> --%>
+	                            <input type="text" style="border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
+	                            <button class="btn">검&nbsp;색</button>		
 	                        </form>
 	                    </div> 
 	                </div> 
@@ -120,28 +119,39 @@
 	                        <h3>조회수</h3>
 	                    </div> <!--.boardListIn-->
 	                    <ul>
-	                        <c:forEach var="boardlist" items="${pinList}">
+	                        <c:forEach var="list" items="${pinList}">
 	                        <li>
 	                            <p class="bno"><img src="/resources/images/bell.png" width="25px" height="25px" style="position: absolute;top: 5px;left: -2px;"></p>
 	                            <p class="cate">
 	                            	<c:choose>
-			                    		<c:when test="${boardlist.cate=='0'}">
+			                    		<c:when test="${list.cate=='0'}">
 					                    	<c:out value="공지" />
 			                    		</c:when>
 			                        	<c:otherwise>
-			                        		 <c:out value="${boardlist.cate}등급" />
+			                        		 <c:out value="${list.cate}등급" />
 				                        </c:otherwise>	
 				                    </c:choose>
 	                            </p>
-	                            <p class="title"><a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]</p>
-	                            <p class="writer"><a href="#">${boardlist.writer}</a></p>
-	                            <p class="date"><fmt:formatDate value="${boardlist.date}" pattern="yyyy/MM/dd"/></p>
-	                            <p class="hit">${boardlist.hit}</p>
+	                            <p class="title">
+		                           	<c:if test="${list.date>=nowday}">
+			                            <span class="newTxt" style="color:red;">
+											N
+			                            </span>
+		                            </c:if>
+	                            	<a href="/board/read?bno=${list.bno}">${list.title}</a>[${list.replyCnt}]
+	                            	<c:if test="${boardlist.file==1}">
+		                            	<span><img src="/resources/images/clip.png" style="width: 16px;height: 16px;margin: 10px;"></span>
+		                            </c:if>
+	                            </p>
+	                            <p class="writer"><a href="#">${list.writer}</a></p>
+	                            <p class="date"><fmt:formatDate value="${list.date}" pattern="yyyy/MM/dd"/></p>
+	                            <p class="hit">${list.hit}</p>
 	                        </li>
 	                        </c:forEach>
+	                        
 	                        <c:forEach var="boardlist" items="${list}">
 	                        <li>
-	                            <p class="bno">${boardlist.bno}</p>
+	                            <p class="bno">${boardlist.rownum}</p>
 	                            <p class="cate">
 	                            	<c:choose>
 			                    		<c:when test="${boardlist.cate=='0'}">
@@ -152,9 +162,19 @@
 				                        </c:otherwise>	
 				                    </c:choose>
 	                            </p>
-	                            <p class="title"><a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]</p>
+	                            <p class="title">
+		                            <c:if test="${boardlist.date>=nowday}">
+			                            <span class="newTxt" style="color:red;">
+											N
+			                            </span>
+		                            </c:if>
+		                            <a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]
+		                            <c:if test="${boardlist.file==1}">
+		                            	<span><img src="/resources/images/clip.png" style="width: 16px;height: 16px;margin: 10px;"></span>
+		                            </c:if>
+	                            </p>
 	                            <p class="writer"><a href="#">${boardlist.writer}</a></p>
-	                            <p class="date"><fmt:formatDate value="${boardlist.date}" pattern="yyyy/MM/dd"/><input class="newDate" type="hidden" value="${boardlist.date}"></p>
+	                            <p class="date"><fmt:formatDate value="${boardlist.date}" pattern="yyyy/MM/dd"/></p>
 	                            <p class="hit">${boardlist.hit}</p>
 	                        </li>
 	                        </c:forEach>
@@ -165,17 +185,15 @@
 	                    <div class="searchIn">
 	                        <form id="searchForm" action="/board/list" method="get">
 	                            <select name="type">
-	                                <option value="" <c:out value="${pageMaker.cri.type==null?'selected':''}" />>--</option>
+	                                <option value="" <c:out value="${pageMaker.cri.type==null?'selected':''}" />>선택</option>
 	                                <option value="T" <c:out value="${pageMaker.cri.type=='T'?'selected':''}" />>제목</option>
 	                                <option value="C" <c:out value="${pageMaker.cri.type=='C'?'selected':''}" />>내용</option>
 	                                <option value="W" <c:out value="${pageMaker.cri.type=='W'?'selected':''}" />>작성자</option>
-	                                <option value="TC" <c:out value="${pageMaker.cri.type=='TC'?'selected':''}" />>제목+내용</option>
 	                            </select>
 	                            <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
 	                            <input type="hidden" name="amount" value="${pageMaker.cri.amount}">	
 	                            <input type="text" name="keyword" value="${pageMaker.cri.keyword}" class="keyword">		
 	                            <button class="btn btn-primary">검&nbsp;색</button>		
-	                                
 	                        </form>
 	                    </div> 
 	                </div> 
@@ -206,22 +224,19 @@
             </div>
         </div>
 		<div style="position: absolute;    top: 193px;    right: 65px;    background-color: aliceblue;    width: 400px;    height: 300px;">정보</div>        
-		<div style="position: absolute;    top: 550px;    right: 65px;    background-color: aliceblue;    width: 400px;    height: 300px;">달력</div> 
+		<div style="position: absolute;    top: 550px;    right: 65px;    background-color: aliceblue;    width: 400px;    height: 300px;">달력</div>
+		<div class="cateTxt" style="display:none; width: 700px;   height: 330px;    position: fixed;    top: 50%;    left: 50%;    margin: -187px 0 0 -408px;    background-color: #fff;    text-align: center;    font-size: 20px;    padding-top: 46px;">
+			<span class="close" style="position: absolute;    top: -60px;    left: 50%;    font-size: 35px;    border: 1px solid #222;    padding: 0px 15px;    margin-left: -25px;">X</span>
+			<p>※ 등급 정책 ※</p>
+			<p>첫 로그인시 1등급</p>
+			<p>*  1등급>2등급 : 게시물 수, 댓글 수, 방문 수 각각 10개 이상</p>
+			<p> *  2등급>3등급 : 게시물 수, 댓글 수 ,방문 수 각각 20개 이상</p>
+			<p>* 1등급 : 2등급, 3등급 게시판 조회 불가</p>
+			<p>* 2등급 : 3등급 게시판 조회 불가</p>
+		</div>
+		<script>
+			$(".cateInfo").click(function(){$(".cateTxt").show(500)});
+			$(".close").click(function(){$(".cateTxt").hide(500)});
+		</script>
     </body>
-    <script type="text/javascript">
-    function formatDate(curDate) {
-        var today, resultDate;
-        today = new Date();
-        resultDate = new Date(curDate);
-            
-        if ((today - resultDate)/(60*60*1000) <= 24) {
-//         	$(".new").css("dispaly","none");
-        	console.log("aaa");
-        }
-        else {
-        	console.log("aaba");
-        }
-    }
-    formatDate($(".newDate").val());
-    </script>
 </html>

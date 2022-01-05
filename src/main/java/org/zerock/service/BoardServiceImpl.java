@@ -1,6 +1,7 @@
 package org.zerock.service;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -22,7 +23,6 @@ public class BoardServiceImpl implements BoardService {
 	public BoardMapper mapper;
 	private BoardAttachMapper attachMapper;
 	private ReplyMapper replyMapper;
-	
 	@Override
 	public List<BoardVO> list(Criteria cri) {
 		return mapper.list(cri);
@@ -57,11 +57,11 @@ public class BoardServiceImpl implements BoardService {
 		if(vo.getAttachList()==null || vo.getAttachList().size()<=0 ) {
 			return;
 		}
-			vo.getAttachList().forEach(attach->{
-					//파일정보           =BoardAttachVO
-				attach.setBno(vo.getBno());
-				attachMapper.insert(attach);
-			});
+		vo.getAttachList().forEach(attach->{
+				//파일정보           =BoardAttachVO
+			attach.setBno(vo.getBno());
+			attachMapper.insert(attach);
+		});
 	}
 	
 	@Override
@@ -101,6 +101,7 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardAttachVO> getAttachList(int bno) {
 		return attachMapper.findByBno(bno);
 	}
+	
 
 
 }

@@ -47,7 +47,7 @@ import java.util.LinkedList;
 public class UploadController {
 
 	
-	private boolean checkImageType(File file) {//
+	private boolean checkImageType(File file) {
 
 		try {
 			String contentType = Files.probeContentType(file.toPath());
@@ -61,7 +61,6 @@ public class UploadController {
 
 	
 	
-//泥⑤��뙆�씪 �뾽濡쒕뱶
 	
 	
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -298,5 +297,220 @@ for (MultipartFile multipartFile : tuploadFile) {
 		return new ResponseEntity<String>("deleted", HttpStatus.OK);
 
 	}
+	
+	//img
+//================================================================================================================================================================================================
+    //file
+	
+	@PostMapping("/fileUploadFormAction")
+	public void fileUploadFormAction(MultipartFile[] uploadFile, Model model) {
+							//두개 이상을 선택하기 위해 배열에다가 저장
+		String uploadFolder = "C:\\upload";
+						//어디다가 파일 업로드 할껀지의 경로
+		for (MultipartFile multipartFile : uploadFile) {
 
+			log.info("-------------------------------------");
+			log.info("Upload File Name: " + multipartFile.getOriginalFilename());
+			log.info("Upload File Size: " + multipartFile.getSize());
+
+			File saveFile = new File(uploadFolder, multipartFile.getOriginalFilename());
+			//C:\\upload에 실제파일명 문자열을 saveFile변수에 저장
+			log.info("saveFile : "+saveFile);
+			try { 
+				multipartFile.transferTo(saveFile);
+							//transferTo(파일명) : 파일명으로 저장
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}  //end catch
+		}  //end for
+
+	}
+	
+	private String fileGetFolder() {//이해함 ㅇㅇㅇ
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		//날짜형태(format)를 년/월/일 형태로 sdf변수에 저장 
+		Date date = new Date();
+		//오늘날짜를 저장하는 date변수에 저장 
+		String str = sdf.format(date);
+		//오늘날짜를  년/월/일 형태(format)로 str변수에 저장
+
+		return str.replace("-", File.separator);
+				 // 치환함수 // -를   \\로 변경시켜줌(ex.2021-10-27 ->2021\\10\\27
+	}
+	
+	private boolean fileCheckImageType(File file) {//
+
+		try {
+			String contentType = Files.probeContentType(file.toPath());
+					//받은 타입이                     파일형식을 보는 메소드                   = file의 형식을 가져온다.
+			return contentType.startsWith("image");
+					//이미지타입이면(true) 리턴
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+	
+
+	@PostMapping(value = "/fileUploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<AttachFileDTO>> fileUploadAjaxPost(MultipartFile[] uploadFile) {
+		log.info("uploadFile : " +uploadFile[0].getOriginalFilename());
+		List<AttachFileDTO> list = new ArrayList<>();
+		String uploadFolder = "C:\\upload\\";
+		String uploadFolderPath = fileGetFolder(); 	 
+							
+		log.info("getFolder : "+uploadFolderPath);
+		// make folder --------
+		File uploadPath = new File(uploadFolder, uploadFolderPath); 
+		if (uploadPath.exists() == false) {  
+			uploadPath.mkdirs();  
+		}
+		
+		
+		for (MultipartFile multipartFile : uploadFile) {
+			AttachFileDTO attachDTO = new AttachFileDTO();
+			String uploadFileName = multipartFile.getOriginalFilename();
+			uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
+			log.info("only file name: " + uploadFileName);
+			attachDTO.setFileName(uploadFileName);
+
+			
+			
+			UUID uuid = UUID.randomUUID();
+			uploadFileName = uuid.toString() + "_" + uploadFileName;
+
+			try {
+				File saveFile = new File(uploadPath, uploadFileName);
+
+				multipartFile.transferTo(saveFile);
+				
+				attachDTO.setUuid(uuid.toString());
+
+				attachDTO.setUploadPath(uploadFolderPath);
+
+				if (fileCheckImageType(saveFile) && multipartFile.getSize()<=10240000) {
+					attachDTO.setImage(true);
+				} 
+				list.add(attachDTO);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}  
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+
+	
+	
+	
+	@GetMapping("/fileDisplay")
+	@ResponseBody
+	public ResponseEntity<byte[]> fileGetFile(String fileName) {
+
+		log.info("fileName: " + fileName);
+							//경로안에있는 섬네일 이미지파일이름
+		File file = new File("C:\\upload\\" + fileName);
+							//C:\\upload\\+경로안에있는 섬네일 이미지파일이름
+		log.info("file: " + file);
+
+		ResponseEntity<byte[]> result = null;//???
+
+		try {
+			HttpHeaders header = new HttpHeaders();
+			//HttpHeaders는 클라이언트와 서버가 요청 또는 응답으로 부가적인 정보를 전송을 할 수 있게 한다.
+			header.add("Content-Type", Files.probeContentType(file.toPath()));
+			//헤더에. 추가		받은타입                     	파일형식을 보는 메소드                   = file의 형식을 가져온다.
+			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), header, HttpStatus.OK);
+											//지정한 파일의 정보를새로운 byte[]로 저장함
+			//									 body부분 값을 전송                                  헤더값을 전송 , 상태		           
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	
+	
+	
+	
+	@GetMapping(value = "/fileDownload", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@ResponseBody					 //다운로드 할 수 있는 환경을 header에 추가
+	public ResponseEntity<Resource> fileDownloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) {
+//마임을 쓰기 위해서 produces = MediaType.APPLICATION_OCTET_STREAM_VALUE , Resource , @RequestHeader("User-Agent") String userAgent들이 꼭 있어야함 
+		Resource resource = new FileSystemResource("C:\\upload\\" + fileName);
+//다운로드를 할수 있는 클래스=Resource
+		if (resource.exists() == false) { // 다운로드 할 파일이 존재하지 않으며
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); //파일이 없다라는 메세지 웹브라우저에게 전달
+		}
+		// 다운로드할 파일을 가져와서 resourceName에 전환
+		String resourceName = resource.getFilename();
+
+		// remove UUID
+		String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
+												//substring특성상 + 1을 하지 않으면 _부터 나옴 
+		HttpHeaders headers = new HttpHeaders();
+		try {
+
+			boolean checkIE = (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1);
+																				//익스플로어를 의미																	
+			String downloadName = null;
+
+			if (checkIE) { //checkIE가 트루이면 지금 현재 사용자의 브라우저가 인터넷 익스플로어라는 의미
+				//인터넷 익스플로어 브라우저 전용
+				downloadName = URLEncoder.encode(resourceOriginalName, "UTF8").replaceAll("\\+", " ");
+								//이것을 하지 않으면 다운로드 할 때 한글이 깨짐
+			} else {
+				//인터넷 익스플로어를 제외하고 처리하는 방식
+				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
+			}
+
+			headers.add("Content-Disposition", "attachment; filename=" + downloadName);
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+			//			  다운로드 할수 있도록 처리(resource),HttpHeaders객체를 이용해서(headers)
+		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+	}
+	
+	
+	
+	
+	@PostMapping("/fileDeleteFile")
+	@ResponseBody
+	public ResponseEntity<String> fileDeleteFile(String fileName, String type) {
+
+		log.info("deleteFile: " + fileName);
+
+		File file;
+
+		try {
+			file = new File("C:\\upload\\" + URLDecoder.decode(fileName, "UTF-8"));
+
+			file.delete();
+
+			if (type.equals("image")) {
+
+				String largeFileName = file.getAbsolutePath().replace("s_", "");
+
+				log.info("largeFileName: " + largeFileName);
+
+				file = new File(largeFileName);
+
+				file.delete();
+			}
+
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		return new ResponseEntity<String>("deleted", HttpStatus.OK);
+
+	}
 }

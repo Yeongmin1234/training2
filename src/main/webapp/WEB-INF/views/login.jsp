@@ -6,7 +6,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>intranet</title>
+        <title>document</title>
         <style>
         	.loginBox{position:relative;width: 800px;height: 500px;padding-top:50px;margin: 220px auto 0 auto;text-align: center;box-sizing:border-box;}
         	.inputBox{display:flex;flex-direction:column}
@@ -27,7 +27,7 @@
 	                	<input type="text" name="" placeholder="아이디">
 	                    <input type="password" name="" placeholder="비밀번호">
                     </div>
-                    <button>로그인</button>
+                    <button><a href="/board/list">로그인</a></button>
                 </form>
             	<div style="position: absolute;top: 270px;right: 250px;font-size: 17px;">@gamedex.co.kr</div>
             </div>

@@ -1,5 +1,6 @@
 package org.zerock.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import lombok.Data;
 
 @Data
 public class BoardVO {
-	private int rownum;
+	private int rownum;	   //pk
 	private int bno;	   //pk
 	private String title;  //力格
 	private	String text;   //郴侩
@@ -15,7 +16,9 @@ public class BoardVO {
 	private Date date;	   //累己老磊
 	private int replyCnt;
 	private int hit;
-	private String cate;
+	private int cate;
 	private int pin;
+	private int file;
 	private List<BoardAttachVO> AttachList;
+	
 }

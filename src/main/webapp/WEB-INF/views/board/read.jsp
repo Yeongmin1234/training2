@@ -8,16 +8,19 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<link rel="icon" href="data:;base64,iVBORw0KGgo=">
         <link rel="stylesheet" href="/resources/css/common.css" />
         <link rel="stylesheet" href="/resources/css/approval.css" />
+        <link rel="stylesheet" href="/resources/css/list.css" />
         <link rel="stylesheet" href="/resources/css/jquery.mCustomScrollbar.min.css" />
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="/resources/js/jquery.mCustomScrollbar.concat.min.js"></script>
         <script src="/resources/js/intra.js"></script>
-        <script src="/resources/js/reply2.js"></script>
-        <title>intranet</title>
+        <script src="/resources/js/reply.js"></script>
+        <script src="/resources/js/read.js"></script>
+        <title>document</title>
         <style>
-        	.rnoColumn{display: none;}#ModBtn,#RemoveBtn{cursor: pointer;}.modInput{border:1px solid #333;margin:5px 0;outline:none;}.blindBtn{display:none;cursor: pointer;}
+        	.rnoColumn{display: none;}#ModBtn,#RemoveBtn{cursor: pointer;}.modInput{border:1px solid #333;margin:5px 0;outline:none;}.blindBtn{display:none;cursor: pointer;}.uploadResult a:hover{border-bottom:1px solid #222;}.active{font-weight: bold;}
         </style>
     </head>
     <body>
@@ -30,25 +33,28 @@
                     </a>
                 </h1>
                 <div class="box">
-                <div  style="position:relative;">
-                   <p>
-                       <strong><span>000&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
-                       <em>3등급</em>
-                   </p>
-                    <p style="position:absolute;top:0;right:-307px;"><a href="javascript:void(0);" title="로그아웃">로그아웃</a></p>
-                </div>    
-                     
-                    <ul class="fast-menu">
-                        <li><a class="fast-menu__el-1" href="javascript:void(0);" title=""></a></li>
-                        <li><a class="fast-menu__el-2" href="javascript:void(0);" title=""></a></li>
-                    </ul>
+	                <div  style="position:relative;">
+	                   <p>
+	                       <strong><span>000&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
+	                       <em>3등급</em>
+	                   </p>
+	                    <p style="position:absolute;top:0;right:-307px;"><a href="" title="로그아웃">로그아웃</a></p>
+	                </div>    
                 </div>
+                   <div class="search" style="position: absolute;top: 39px;right: 154px;">
+	                    <div>
+	                        <form action="" method="" style="display: flex;">
+	                            <input type="text" style="border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
+	                            <button class="btn btn-primary">검&nbsp;색</button>		
+	                        </form>
+	                    </div> 
+	                </div> 
             </header>
             <!-- 네비게이션 영역 -->
             <div class="navWrap">
                 <ul class="nav">
                     <li class="nav_el">
-                        <h4><a href="javascript:void(0);" title="전체 게시판">전체 게시판</a><i></i></h4>
+                        <h4><a href="" title="전체 게시판">전체 게시판</a><i></i></h4>
                         <div class="sub_el">
                             <ul>
                             	 <li>
@@ -67,7 +73,7 @@
                         </div>
                     </li>
                     <li class="nav_el">
-                        <h4><a href="javascript:void(0);" title="마이페이지">마이페이지</a><i></i></h4>
+                        <h4><a href="" title="마이페이지">마이페이지</a><i></i></h4>
                         <div class="sub_el">
                             <ul>
                                 <li>
@@ -97,8 +103,8 @@
 			                    </c:choose>
 		            	 	</td><th>조회수</th><td>${read.hit}</td></tr>
 		            	 	<tr><th>제목</th><td colspan='3'>${read.title}</td></tr>
-		            	 	<tr><th>첨부파일</th><td colspan='3'>첨부파일</td></tr>
-		            	 	<tr style="height:200px"><th>내용</th><td colspan='3'> ${read.text}</td></tr>
+		            	 	<tr><th>첨부파일</th><td colspan='3'><div class="uploadResult"><ol style="display:flex;"></ol></div></td></tr>
+		            	 	<tr style="height:200px"><th>내용</th><td colspan='3'>${read.text}</td></tr>
 		            	 </table>
 		            	 </div>
 	       	    		 <div>
@@ -110,19 +116,19 @@
 		           	 		<div class="board_reply">
 		           	 			<div style="margin: 9px 0;padding-bottom: 13px;border-bottom: 1px solid #767171;">댓글 <span>${read.replyCnt}</span></div>
 		                    	<div class="reply_write">
-		                        <input type="text" id="reply" placeholder="댓글을 입력해주세요.">
-		                        <button type="button" id="RegisterBtn" class="button">등록</button>
-		                     </div>
-							<ul class="chat">
-							</ul>
-							 <div class="reply-footer" style="order: 2; padding-top:20px;">
-						</div>
-	                 </div>
+			                        <input type="text" id="reply" style="outline:none;" placeholder="댓글을 입력해 주세요.">
+			                        <button type="button" id="RegisterBtn" class="button">등록</button>
+			                     </div>
+								 <ul class="chat">
+								 </ul>
+								 <div class="reply-footer" style="order: 2; padding-top:20px;">
+								</div>
+			                 </div>
                 </div>
             </div>
         </div>
         <script>
-        	$(".remove").click(function(){if(confirm("삭제 하시겠습니까?")){return true;}else{return false}});
+       	$(".remove").click(function(){if(confirm("삭제 하시겠습니까?")){return true;}else{return false}});
         </script>
     </body>
 </html>

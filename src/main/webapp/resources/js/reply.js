@@ -98,28 +98,24 @@ $(document).ready(function() {
 				console.log(list);
 				
 				for(var i = 0, len=list.length || 0; i < len; i++) {
-					str+="<li class='reply_view' style='margin-left: "+20*list[i].redepth+"px;'>"
-					str+="<div style='margin-left: 30px;display:flex;'><span style='margin:0 15px;'>"+list[i].replyer+"</span><i class='reply'>"+list[i].reply+"</i></div>"
-//                    str+="<div class='comment-view__area'>"
-//                    str+="<div class='comment-view__thumb'>"
-//                    str+="<a href='#'><img src='/resources/images/commu/char0.png' alt='' />"
-//                    str+="</a></div>"
-//                    str+="<div class='comment-view__contents'>"
-//                    str+="<div class='comment-view__info'>"
-//                    str+="<input type='hidden' name='rno' id='rno'  value='"+list[i].rno+"' >"
-//                    str+="<a href='#' class='comment-view__user'>"
-//                    str+="<span>LV.8</span>"
-//                    str+="<span>&nbsp"+list[i].replyer+"</span>"
-//                    str+="</a>"
-//                    str+="<span class='comment-view__date'>"+replyService.displayTime(list[i].replyDate)+"</span>"
-//                    str+="<button type='button' class='rereply'><i class='ico ico--reple'></i></button>"
-                    str+="<div style='display:flex;margin-left: 10px;'><div style='margin-right:20px'>"+replyService.displayTime(list[i].replyDate)+"</div><div id='ModBtn'>수정</div><div id=''>&nbsp&nbsp답글</div><div id='RemoveBtn'>&nbsp&nbsp삭제</div><span class='rnoColumn'>"+list[i].rno+"</span></div>"
-//                    str+="</div>"
-                    str+="<span class='blindBtn'>수정</span>"
-//                    str+="</div>"
-//                    str+="</div>"
-                    str+="</li>"
-				}
+					str+="<li class='reply_view'>";
+					str+="<div style='display:flex;margin-left:"+40*list[i].redepth+"px;'>";
+					str+="<div style='margin-left: 30px;display:flex;'><span style='margin:0 15px;'>"+list[i].replyer+"</span><i class='reply'>"+list[i].reply+"</i></div>";
+                    str+="<div style='display:flex;margin-left: 10px;'><div style='margin-right:20px'>"+replyService.displayTime(list[i].replyDate)+"</div>";
+					str+="<div id='ModBtn'>수정</div>";
+					
+					if(list[i].redepth==0){
+					str+="<div id='reChat' style='cursor:pointer'>&nbsp&nbsp답글</div>";
+					}
+					
+					str+="<div id='RemoveBtn'>&nbsp&nbsp삭제</div>";
+					str+="<span class='rnoColumn'>"+list[i].rno+"</span></div>";
+                    str+="<span class='blindBtn'>수정</span><i class='blindBtn closer' style='margin-left: 8px;'>취소</i>";
+					str+="</div>";	
+                    str+="<p class='rcIn' style='display:flex;'><span></span><i style='display:none;margin-top: 9px;'><button id='reRegisterBtn' class='btn' style='margin-left: 15px;'>등록</button><button class='btn close' style='margin-left: 8px;'>취소</button></i></p>";
+                    str+="</li>";
+					if($("#reChat").find('span').text()==1){$("#reChat").css('display','none');}else{$("#reChat").css('display','block');}
+				} 
 				
 				replyUL.html(str);
 				
@@ -129,8 +125,8 @@ $(document).ready(function() {
 	
 	
 	var replyT = $("#reply");				
-	var ModBtn = $("#ModBtn");
 	var RegisterBtn = $("#RegisterBtn");
+	
 	
 	RegisterBtn.on("click", function(e) {
 		if(replyT.val()=="" || replyT.val()==" "){alert("댓글을 입력해 주세요.");return false;}
@@ -147,8 +143,46 @@ $(document).ready(function() {
 			)
 			
 		})
+		$('.closer').click(function(){if(confirm("취소 하시겠습니까?")){$(this).parent().parent().css('display','none')}})
 
+//		$(".chat").on("click", "#reChat", function(e) {
+////			e.preventDefault();
+//			var rno=$(this).siblings("span").html();
+//			var reply = $(this).parent().siblings("div").find("i").html();
+//			console.log("aaa "+rno+" bbb "+reply);
+//			var paReply ={rno:rno, reply: reply ,reparent : rno}
+//			replyService.update(paReply, function(result) {})
+//		})
+//		
+		$(".chat").on("click", "#reChat", function(e) {
+			e.preventDefault();
+			var rno=$(this).siblings("span").html();
+			var inBox=$(this).parent().parent().next('p').find("span");
+			var reBtn=$(this).parent().parent().next('p').find("i").find("#reRegisterBtn");
 			
+			$(this).parent().parent().next('p').css('display','flex')
+			$(this).parent().parent().next('p').find("i").css('display','block');
+			
+			inBox.html("<input style='outline:none; width: 500px;margin: 8px 0 0 85px;' type='text' name=reply value='' placeholder='대댓글을 입력해 주세요'>")
+			
+			$('.close').click(function(){if(confirm("취소 하시겠습니까?")){$(this).parent().parent().css('display','none')}})
+		
+			reBtn.on("click", function(e) {
+				var reVal = $(this).parent().siblings("span").find("input");
+				var reply = {
+						reply : reVal.val(),
+						bno : bnoValue,
+						reparent : rno,
+						redepth : 1
+					};
+				
+					if (confirm("등록 하시겠습니까?")){
+						replyService.add(reply, function(result) {reVal.val("");showList(1);})
+						
+						} else{reVal.val("");};
+			})
+		});
+		
 		
 		$(".chat").on("click", "#RemoveBtn", function(e) {
 					var rno=$(this).siblings("span").html();
@@ -170,16 +204,25 @@ $(document).ready(function() {
 					}
 						return false;
 		})
+		
+		
 		$(".chat").on("click", "#ModBtn", function(e) {
 			e.preventDefault();
 			var rno=$(this).siblings("span").html();
 			var par=$(this).parent("div").siblings("div").find("i");
 			var disa=$(this).parent("div");
 			var bBtn=$(this).parent("div").siblings("span");
+			var cBtn=$(this).parent("div").siblings("i");
 			var reply=par.html();
 			disa.css({'display':'none'});
 			bBtn.css({'display':'block'});
+			cBtn.css({'display':'block'});
 			par.contents().unwrap().wrap("<input style='width: 185px;margin: 0 15px;' type='text' class='modInput' name=reply value='"+reply+"'>");
+			cBtn.click(function(){
+				if (confirm("취소 하시겠습니까?")){
+					showList(pageNum);
+				}
+			})
 			bBtn.on("click", function(e) {
 			var ModReplypar=$(".modInput").val();
 			var reply = {rno:rno, reply :ModReplypar};
@@ -189,6 +232,7 @@ $(document).ready(function() {
 				showList(pageNum);
 			});
 			}
+//			else{$(".modInput").val("")}
 		});
 		});
 		
@@ -207,35 +251,6 @@ $(document).ready(function() {
 	})
 	})
 
-	$(".chat").on("click",".dd",function(e){
-						e.preventDefault();
-						var par=$(this).parent("div").parent("div").parent("div").parent("li").next("ul");
-						alert("aaa");
-						var strr="";
-					
-								strr+="<li class='comment-view__article comment-view__article--reple'>"
-			                    strr+="<div class='comment-view__reple'>"
-			                    strr+="<img src='/resources/images/commu/ico_comment-reple.png' alt=''></div>"
-			                    strr+="<div class='comment-view__area'>"
-			                    strr+="<div class='comment-view__thumb'><a href='#'>"
-			                    strr+="<img src='/resources/images/commu/char0.png' alt=''>"
-			                    strr+="</a></div>"
-			                    strr+="<div class='comment-view__contents'>"
-			                    strr+="<div class='comment-view__info'>"
-			                    strr+="<a href='#' class='comment-view__user'>"
-			                    strr+="<span>LV.8</span><span>고래입냄시</span></a>"
-			                    strr+=" <span class='comment-view__date'>2021년 3월 01일 10:00</span>"
-			                    strr+="<div class='comment-view__admin'><div>수정</div><div>삭제</div></div></div>"
-			                    strr+="<div class='comment-view__desc'>아주 멋진 탱크네요!</div>"
-			                    strr+="</div>"
-			                    strr+="</div>"
-			                    strr+="</li>"
-								
-					
-					
-					
-					par.html(strr);		
-				});
 
 
 

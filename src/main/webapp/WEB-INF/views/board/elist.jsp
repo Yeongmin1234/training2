@@ -19,7 +19,7 @@
         <script src="/resources/js/jquery.drawDoughnutChart.js"></script>
         <script type="text/javascript" src="/resources/js/list.js"></script>
         <script src="/resources/js/intra.js"></script>
-        <title>intranet</title>
+        <title>document</title>
         <style>.active{font-weight: bold;}</style>
         <script>
             $(document).ready(function () {
@@ -58,11 +58,8 @@
                 </div>
                   <div class="search" style="position: absolute;top: 39px;right: 154px;">
 	                    <div>
-	                        <form action="" method="">
-	                            <select style="width: 100px;font-size: 11px;">
-	                                <option>통합검색</option>
-	                            </select>
-	                            <input type="text" style="border: 1px solid #4a4a4a;outline:none;">
+	                        <form action="" method="" style="display: flex;">
+	                           	<input type="text" style="border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
 	                            <button class="btn btn-primary">검&nbsp;색</button>		
 	                        </form>
 	                    </div> 
@@ -120,28 +117,35 @@
 	                        <h3>조회수</h3>
 	                    </div> <!--.boardListIn-->
 	                    <ul>
-	                     <c:forEach var="boardlist" items="${pinList}">
+	                     <c:forEach var="list" items="${pinList}">
 		                        <li>
 		                            <p class="bno"><img src="/resources/images/bell.png" width="25px" height="25px" style="position: absolute;top: 5px;left: -2px;"></p>
 		                            <p class="cate">
 		                            	<c:choose>
-				                    		<c:when test="${boardlist.cate=='0'}">
+				                    		<c:when test="${list.cate=='0'}">
 						                    	<c:out value="공지" />
 				                    		</c:when>
 				                        	<c:otherwise>
-				                        		 <c:out value="${boardlist.cate}등급" />
+				                        		 <c:out value="${list.cate}등급" />
 					                        </c:otherwise>	
 					                    </c:choose>
 		                            </p>
-		                            <p class="title"><a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]</p>
-		                            <p class="writer"><a href="#">${boardlist.writer}</a></p>
-		                            <p class="date"><fmt:formatDate value="${boardlist.date}" pattern="yyyy/MM/dd"/></p>
-		                            <p class="hit">${boardlist.hit}</p>
+		                            <p class="title">
+			                            <c:if test="${list.date>=nowday}">
+				                            <span class="newTxt" style="color:red;">
+												N
+				                            </span>
+			                            </c:if>
+			                            <a href="/board/read?bno=${list.bno}">${list.title}</a>[${list.replyCnt}]
+		                            </p>
+		                            <p class="writer"><a href="#">${list.writer}</a></p>
+		                            <p class="date"><fmt:formatDate value="${list.date}" pattern="yyyy/MM/dd"/></p>
+		                            <p class="hit">${list.hit}</p>
 		                        </li>
 	                        </c:forEach>
 	                        <c:forEach var="boardlist" items="${list}">
 		                        <li>
-		                            <p class="bno">${boardlist.bno}</p>
+		                            <p class="bno">${boardlist.rownum}</p>
 		                            <p class="cate">
 				                    	<c:choose>
 				                    		<c:when test="${boardlist.cate=='0'}">
@@ -152,7 +156,14 @@
 					                        </c:otherwise>	
 					                    </c:choose>	
 		                            </p>
-		                            <p class="title"><a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]</p>
+		                            <p class="title">
+			                            <c:if test="${boardlist.date>=nowday}">
+				                            <span class="newTxt" style="color:red;">
+												N
+				                            </span>
+			                            </c:if>
+			                            <a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]
+		                            </p>
 		                            <p class="writer"><a href="#">${boardlist.writer}</a></p>
 		                            <p class="date"><fmt:formatDate value="${boardlist.date}" pattern="yyyy/MM/dd"/></p>
 		                            <p class="hit">${boardlist.hit}</p>

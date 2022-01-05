@@ -15,11 +15,13 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="/resources/js/jquery.mCustomScrollbar.concat.min.js"></script>
         <script src="/resources/js/intra.js"></script>
+        <script src="/resources/js/update.js"></script>
         <script src="/resources/js/tui-date-picker.js"></script>
         <script src="/resources/js/tui-time-picker.js"></script>
         <script type="text/javascript" src="/resources/SE2/js/service/HuskyEZCreator.js" charset="utf-8"></script>
-        <title>intranet</title>
+        <title>document</title>
         <style>
+        	.btn{border: 1px solid #333;    border-radius: 3px;    padding: 1px 8px;    margin-left: 2px;    background-color: transparent;}.fUploadDiv ul li{margin-right:15px;}
         	.rnoColumn{display: none;}#ModBtn,#RemoveBtn{cursor: pointer;}.modInput{border:1px solid #333;margin:5px 0;outline:none;}.blindBtn{display:none;cursor: pointer;color:#777;font-size:.75rem;}
         </style>
         <script>
@@ -53,6 +55,14 @@
                         <li><a class="fast-menu__el-2" href="javascript:void(0);" title=""></a></li>
                     </ul>
                 </div>
+                   <div class="search" style="position: absolute;top: 39px;right: 154px;">
+	                    <div>
+	                        <form action="" method="" style="display: flex;">
+	                            <input type="text" style="border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
+	                            <button class="btn btn-primary">검&nbsp;색</button>		
+	                        </form>
+	                    </div> 
+	                </div> 
             </header>
             <!-- 네비게이션 영역 -->
             <div class="navWrap">
@@ -105,7 +115,7 @@
 										       <option>카테고리</option>
 										    </select>
 		            	 				</td>
-		            	 	<td style="width: 30%;" colspan='3'>1등급</td><th style="display:none;">게시일</th><td style="display:none;"> 
+		            	 	<td style="width: 30%;" colspan='3'>1등급<input type="text" name="cate" value="${update.cate}"></td><th style="display:none;">게시일</th><td style="display:none;"> 
 		            	 			<div class="tui">
 			                            <div class="tui-box">
 			                                <div class="tui-tit">게재 일시(KST) :</div>
@@ -511,9 +521,9 @@
 		            	 	</tr>
 		            	 	<tr style="display:none;"><td><input type="hidden" name="bno" id="bno"  value='${update.bno}' ></td></tr>
 		            	 	<tr><th>제목</th><td colspan='3'><input type="text" id="title" name="title" value="${update.title}" style="outline:none;width: 600px;border: 1px solid #ababab;" placeholder="제목을 입력해주세요." />  
-		            	 			<span style="display: none;">
-                                        <input type="checkbox" id="fixedTop" name="" />
-                                        <label for="fixedTop">상단 고정 <i class="checkbox"></i></label>
+		            	 			<span style="">
+                                        <input type="checkbox" id="fixedTop" name="pin" value="${update.pin}"/>
+                                        <label for="fixedTop">상단 고정<i class="checkbox"></i></label>
                                     </span></td></tr>
 		            	 	<tr style="height:200px">
 		            	 		<th>내용</th>
@@ -538,11 +548,35 @@
 									</script>
 			            	 	</td>
 			            	 </tr>
-		            	 	 <tr><th>첨부파일</th><td colspan='3'><input type="file"></td></tr>
-		            	 	 <tr><th>첨부파일</th><td colspan='3'><input type="file"></td></tr>
+		 					 <tr>
+		            	 	 	<th>첨부파일1</th>
+			            	 	 <td colspan='3'>
+				            	 	 <div class='fUploadDiv'>
+					            	 	 <input type="file" id="fUploadFile" name="fUploadFile" style="display:none;">
+					            	 	 <div class='fUploadResult'>
+											<ul style="display:flex;">
+											</ul>
+										</div> 
+					     			 </div>
+					     			 <span style="position: absolute;top: 12px;right: 25px;">* 각 첨부파일 당 최대 10MB까지 업로드 가능합니다.</span>
+				            	 </td>
+			            	 </tr>
+		            	 	 <tr>
+		            	 	 	<th>첨부파일2</th>
+			            	 	 <td colspan='3'>
+				            	 	 <div class='sUploadDiv'>
+					            	 	 <input type="file" id="sUploadFile" name="sUploadFile" style="display:none;">
+					            	 	 <div class='sUploadResult'>
+											<ul>
+											</ul>
+										</div> 
+					     			 </div>
+				            	 </td>
+			            	 </tr>
 		            	</table>
 	            	 </div>
 	       	    	 <div>
+	       	    	 	<input type="hidden" name="file">
 	                    <button type="submit" class="button modify" style="position:absolute;bottom:-30px;right: 80px;" onclick="save()">등록</button>
 	                    <div><a class="button close" href="/board/list" style="position:absolute;bottom:-30px;right: 30px;">취소</a></div>
 	                 </div>
@@ -551,8 +585,13 @@
             </div>
         </div>
         <script>
-        $(".close").click(function(){if(confirm("취소 하시겠습니까?")){return true;}else{return false}});
-        $(".modify").click(function(){if(confirm("저장 하시겠습니까?")){return true;}else{return false}});
+        if($('#fixedTop').val()==1){$("#fixedTop").prop("checked", true);};
+        $('#fixedTop').click(function(){
+	        var checked=$("#fixedTop").is(':checked');
+	        if(checked){$("#fixedTop").val("1")}else{ $("#fixedTop").val("0")}
+        });
+        
+          $(".close").click(function(){if(confirm("취소 하시겠습니까?")){return true;}else{return false}});
 	  	  $("button[type='submit']").on("click",function(e){
 		      		var title=$("#title").val();
 					var text=$("#txtContent").val();
@@ -562,9 +601,12 @@
 						return false;
 					} else if(text.length==0 || text==' ' || text=='<p>&nbsp;</p>' || text=='<p><br></p>'){
 						alert("내용을 입력해주세요.");
+						alert(text);
 						return false;
 					}
+       				if(confirm("저장 하시겠습니까?")){return true;}else{return false};
 				 });
+	  	  
 	      var datePicker;
           var sTimepicker;
           var eTimepicker;

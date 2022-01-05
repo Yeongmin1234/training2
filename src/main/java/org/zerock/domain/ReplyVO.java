@@ -16,8 +16,8 @@ public class ReplyVO {
 	private String replyer;
 	private Date replyDate;
 	private Date updateDate;
-	private String reparent;
-    private String redepth;
-    private Integer reorder;
+	private int reparent;
+    private int redepth;
+    private int reorder;
 
 }

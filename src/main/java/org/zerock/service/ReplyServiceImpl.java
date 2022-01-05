@@ -42,6 +42,9 @@ public class ReplyServiceImpl implements ReplyService {
 	public int remove(int rno) {
 		log.info("remove good....." + rno);
 		ReplyVO vo = mapper.read(rno);
+		log.info("service "+ rno);
+		mapper.deleteRe(rno);
+		
 		boardmapper.updateReplyCnt(vo.getBno(), -1);
 		return mapper.delete(rno);
 	}

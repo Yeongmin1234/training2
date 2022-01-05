@@ -77,7 +77,7 @@ public class ReplyController {
 	public ResponseEntity<String> modify(@PathVariable("rno") int rno,
 									  	  @RequestBody ReplyVO vo) {
 		vo.setRno(rno);
-		
+		log.info("aaa");
 		return service.modify(vo) == 1
 				? new ResponseEntity<>("success", HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 

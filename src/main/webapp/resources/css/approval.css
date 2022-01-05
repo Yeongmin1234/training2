@@ -1830,11 +1830,11 @@ input.off {
 }
 
 .reply_view {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  border-bottom: 1px solid #7c8790;
-  padding: 13px 0;
+/*   display: -webkit-box; */
+/*   display: -ms-flexbox; */
+/*   display: flex; */
+/*   border-bottom: 1px solid #7c8790; */
+  padding: 8px 0;
   font-weight: 700;
   font-size: 15px;
 }

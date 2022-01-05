@@ -43,6 +43,13 @@ public class BoardController {
 	
 	@GetMapping("list")
 	public void list(Model model,Criteria cri) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -1);  
+        
+//        System.out.println(cal.getTime()); 
+//        System.out.println(nowday);
+        System.out.println(service.list(cri));
+        model.addAttribute("nowday",cal.getTime());
 		model.addAttribute("pinList", service.pinList(cri));
 		model.addAttribute("list", service.list(cri));
 		int total= service.totalCount(cri);
@@ -51,6 +58,13 @@ public class BoardController {
 	
 	@GetMapping("elist")
 	public void eachList(Model model,Criteria cri) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -1);  
+        
+//        System.out.println(cal.getTime()); 
+//        System.out.println(nowday);
+        System.out.println(service.list(cri));
+        model.addAttribute("nowday",cal.getTime());
 		model.addAttribute("pinList", service.pinEachList(cri));
 		model.addAttribute("list", service.eachList(cri));
 		int total= service.etotalCount(cri);
@@ -69,16 +83,19 @@ public class BoardController {
 			System.out.println("dkdkdkddk");
 			return "redirect:/board/create";
 		}
+		System.out.println(vo);
 		service.create(vo);
 		rttr.addAttribute("bno", vo.getBno());
 		return "redirect:/board/read";
 	}
 	@GetMapping("read")
 	public void read(int bno, Model model,BoardAttachVO vo) {
+		System.out.println(service.read(bno));
 		model.addAttribute("read", service.read(bno));
 	}
 	@GetMapping("update")
 	public void update(int bno, Model model) {
+		System.out.println("¿Ã∞≈æﬂ!"+service.read(bno));
 		model.addAttribute("update", service.read(bno));
 	}
 	@PostMapping("update")
@@ -89,6 +106,7 @@ public class BoardController {
 			System.out.println("dkdkdkddk");
 			return "redirect:/board/update";
 		}
+		System.out.println(service.update(vo));
 		model.addAttribute("update", service.update(vo));
 		rttr.addAttribute("bno", vo.getBno());
 		log.info(vo);
@@ -110,6 +128,11 @@ public class BoardController {
 	@GetMapping(value="getAttachList",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<BoardAttachVO>> getAttachList (int bno,@RequestParam(value = "in", required=false) List<Integer> in){
+		return new ResponseEntity<>(service.getAttachList(bno),HttpStatus.OK);
+	}
+	@GetMapping(value="fileGetAttachList",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<BoardAttachVO>> fileGetAttachList (int bno,@RequestParam(value = "in", required=false) List<Integer> in){
 		return new ResponseEntity<>(service.getAttachList(bno),HttpStatus.OK);
 	}
 	
