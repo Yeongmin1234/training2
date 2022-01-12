@@ -13,7 +13,9 @@ public class Criteria {
 	private int pageNum;
 	private int amount;
 	private String type;
+	private String allType;
 	private String keyword;
+	private String allKeyword;
 	private String cate;
 	
 	public Criteria() {		

@@ -2,12 +2,16 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <!DOCTYPE html>
 <html lang="ko">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <meta name="_csrf_parameter" content="${_csrf.parameterName}" />
+		<meta name="_csrf_header" content="${_csrf.headerName}" />
+		<meta name="_csrf" content="${_csrf.token}" />
         <link rel="stylesheet" href="/resources/css/common.css" />
         <link rel="stylesheet" href="/resources/css/approval.css" />
         <link rel="stylesheet" href="/resources/css/style.min.css" />
@@ -44,22 +48,25 @@
                 <div class="box">
                 <div  style="position:relative;">
                    <p>
-                       <strong><span>000&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
-                       <em>3등급</em>
+                       <strong><span><sec:authentication property="principal.member.userName"/>&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
+                       <em class="cateInfo" style="cursor:pointer;">3등급</em>
                    </p>
-                    <p style="position:absolute;top:0;right:-307px;"><a href="javascript:void(0);" title="로그아웃">로그아웃</a></p>
+                      <div style="position:absolute;top:-2px;right:44px;">
+	                    <form action="/logout" method="post">
+							<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }">
+							<button>로그아웃</button>
+						</form>
+                   </div>
                 </div>    
-                     
-                    <ul class="fast-menu">
-                        <li><a class="fast-menu__el-1" href="javascript:void(0);" title=""></a></li>
-                        <li><a class="fast-menu__el-2" href="javascript:void(0);" title=""></a></li>
-                    </ul>
                 </div>
-                   <div class="search" style="position: absolute;top: 39px;right: 154px;">
+                  <div class="search" style="position: absolute;top: 39px;right: 137px;">
 	                    <div>
-	                        <form action="" method="" style="display: flex;">
-	                            <input type="text" style="border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
-	                            <button class="btn btn-primary">검&nbsp;색</button>		
+	                        <form id="allSearchForm" action="/board/list" method="get">
+	                            <select style="display:none;" name="allType">
+	                                <option value="TC" <c:out value="${pageMaker.cri.allType=='TC'?'selected':''}" />>제목+내용</option>
+	                            </select>
+	                            <input type="text" name="allKeyword" value="${pageMaker.cri.allKeyword}" style="width: 200px;border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
+	                            <button class="btn">검&nbsp;색</button>		
 	                        </form>
 	                    </div> 
 	                </div> 
@@ -105,7 +112,7 @@
 		            <div>
 		            	<h2 style="margin-bottom: 30px;">1등급 게시판</h2>
 		            	 <table>
-		            	 	<tr><th style="width: 100px;">작성자</th><td style="width: 90%;" colspan='3'>user</td></tr>
+		            	 	<tr><th style="width: 100px;">작성자</th><td style="width: 90%;" colspan='3'>${update.writer}</td></tr>
 		            	 	<tr><th style="width: 10%;">카테고리</th>
 		            	 				<td style="display:none;">
 			            	 				<select class="cate">					
@@ -115,7 +122,7 @@
 										       <option>카테고리</option>
 										    </select>
 		            	 				</td>
-		            	 	<td style="width: 30%;" colspan='3'>1등급<input type="text" name="cate" value="${update.cate}"></td><th style="display:none;">게시일</th><td style="display:none;"> 
+		            	 	<td style="width: 30%;" colspan='3'><input type="text" name="cate" value="${update.cate}"></td><th style="display:none;">게시일</th><td style="display:none;"> 
 		            	 			<div class="tui">
 			                            <div class="tui-box">
 			                                <div class="tui-tit">게재 일시(KST) :</div>
@@ -520,11 +527,18 @@
 								</td>
 		            	 	</tr>
 		            	 	<tr style="display:none;"><td><input type="hidden" name="bno" id="bno"  value='${update.bno}' ></td></tr>
-		            	 	<tr><th>제목</th><td colspan='3'><input type="text" id="title" name="title" value="${update.title}" style="outline:none;width: 600px;border: 1px solid #ababab;" placeholder="제목을 입력해주세요." />  
-		            	 			<span style="">
-                                        <input type="checkbox" id="fixedTop" name="pin" value="${update.pin}"/>
-                                        <label for="fixedTop">상단 고정<i class="checkbox"></i></label>
-                                    </span></td></tr>
+		            	 	<tr>
+		            	 		<th>제목</th>
+	            	 			<td colspan='3'>
+		            	 			<div  style="display:flex;" >
+			            	 			<input type="text" id="title" name="title" value="${update.title}" style="outline:none;width: 600px;border: 1px solid #ababab;" placeholder="제목을 입력해주세요." />  
+			            	 			<span style="margin-left:10px;">
+	                                        <input type="checkbox" id="fixedTop" name="pin" value=""/>
+	                                        <label for="fixedTop">상단 고정 <i class="checkbox"></i></label>
+	                                    </span>
+                                	</div>
+                                </td>
+                            </tr>
 		            	 	<tr style="height:200px">
 		            	 		<th>내용</th>
 			            	 	<td colspan='3'>
@@ -579,12 +593,25 @@
 	       	    	 	<input type="hidden" name="file">
 	                    <button type="submit" class="button modify" style="position:absolute;bottom:-30px;right: 80px;" onclick="save()">등록</button>
 	                    <div><a class="button close" href="/board/list" style="position:absolute;bottom:-30px;right: 30px;">취소</a></div>
+	                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }" />
 	                 </div>
                 	</div>
                 </form>
             </div>
         </div>
+        <div class="cateTxt" style="display:none; width: 700px;height: 330px;position: fixed;    top: 50%;left: 50%;margin: -187px 0 0 -408px;background-color: #fff;    text-align: center;    font-size: 20px;    padding-top: 46px;">
+			<span id="close" style="position: absolute;cursor:pointer;top: -60px;left: 50%;font-size: 35px;border: 1px solid #222;    padding: 0px 15px;    margin-left: -25px;">X</span>
+			<p>※ 등급 정책 ※</p>
+			<p>첫 로그인시 1등급</p>
+			<p>*  1등급>2등급 : 게시물 수, 댓글 수, 방문 수 각각 10개 이상</p>
+			<p> *  2등급>3등급 : 게시물 수, 댓글 수 ,방문 수 각각 20개 이상</p>
+			<p>* 1등급 : 2등급, 3등급 게시판 조회 불가</p>
+			<p>* 2등급 : 3등급 게시판 조회 불가</p>
+		</div>
         <script>
+		if($("input[name='allKeyword']").val().length!=0){$(".pager").css('opacity','0');}
+		$(".cateInfo").click(function(){$(".cateTxt").show(500)});
+		$("#close").click(function(){$(".cateTxt").hide(500)});
         if($('#fixedTop').val()==1){$("#fixedTop").prop("checked", true);};
         $('#fixedTop').click(function(){
 	        var checked=$("#fixedTop").is(':checked');
@@ -592,20 +619,6 @@
         });
         
           $(".close").click(function(){if(confirm("취소 하시겠습니까?")){return true;}else{return false}});
-	  	  $("button[type='submit']").on("click",function(e){
-		      		var title=$("#title").val();
-					var text=$("#txtContent").val();
-					
-				   	if(title.length==0){
-						alert("제목을 입력해주세요.");
-						return false;
-					} else if(text.length==0 || text==' ' || text=='<p>&nbsp;</p>' || text=='<p><br></p>'){
-						alert("내용을 입력해주세요.");
-						alert(text);
-						return false;
-					}
-       				if(confirm("저장 하시겠습니까?")){return true;}else{return false};
-				 });
 	  	  
 	      var datePicker;
           var sTimepicker;

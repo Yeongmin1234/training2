@@ -36,7 +36,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartRequest;
 import org.zerock.domain.AttachFileDTO;
-import org.zerock.domain.testDTO;
 
 import jdk.internal.org.jline.utils.Log;
 import lombok.extern.log4j.Log4j;

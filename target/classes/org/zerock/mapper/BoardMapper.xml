@@ -4,7 +4,6 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.zerock.mapper.BoardMapper">
 
-
 	<select id="list" resultType="org.zerock.domain.BoardVO">
 	select rownum, bno, title, writer, text, date,replyCnt,hit,cate,pin,file
 		from (
@@ -27,6 +26,9 @@
 			</when>
 			<when test="type=='W'.toString()">
 				and writer like concat('%', #{keyword}, '%')	
+			</when>
+			<when test="allType=='TC'.toString()">
+				and title like concat('%',#{allKeyword},'%') or text like concat('%',#{allKeyword},'%')
 			</when>
 		</choose>
 	</select>	
@@ -126,7 +128,7 @@
 	
 	
 	<insert id="create">
-		insert into board (title,text,cate,pin,file) values(#{title},#{text},#{cate},#{pin},#{file});
+		insert into board (title,text,writer,cate,pin,file) values(#{title},#{text},#{writer},#{cate},#{pin},#{file}) 
 		<selectKey keyProperty="bno" order="AFTER" resultType="int">
 			select max(bno) from board
 		</selectKey>
@@ -152,7 +154,7 @@
 		where bno = #{bno}
 	</update>
 	<update id="updateHit">
-      update board set hit = hit + 1
-      where bno = #{bno}      
-   </update>
+		update board set hit = hit + 1
+		where bno = #{bno}
+	</update>
 </mapper>

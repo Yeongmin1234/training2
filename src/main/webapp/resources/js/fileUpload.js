@@ -3,6 +3,10 @@
  */
 $(document).ready(function(e){
    var formObj=$("form[role='form']");
+
+	var header = $("meta[name='_csrf_header']").attr("content");
+	var token = $("meta[name='_csrf']").attr("content");
+
    $("button[type='submit']").on("click",function(e){
 
       e.preventDefault();
@@ -10,7 +14,17 @@ $(document).ready(function(e){
       var havF = $(".fUploadResult ul").html();
       var havS = $(".sUploadResult ul").html();
       var fileYN = $("input[name='file']");
-
+	
+	  var title=$("#title").val();
+	  var text=$("#txtContent").val();
+					
+   	  if(title.length==0){
+		  alert("제목을 입력해주세요.");
+		  return false;
+	  } else if(text.length==0 || text==' ' || text=='<p>&nbsp;</p>' || text=='<p><br></p>'){
+		  alert("내용을 입력해주세요.");
+		  return false;
+	  }
       if(havF.length>20 || havS.length>20){
       	 fileYN.val("1")
       }else if (havF.length<20 && havS.length<20){
@@ -25,9 +39,29 @@ $(document).ready(function(e){
     	  str+="<input type='hidden' name='attachList["+i+"].uploadpath' value='"+jobj.data("path")+"'>"
     	  str+="<input type='hidden' name='attachList["+i+"].filetype' value='"+jobj.data("type")+"'>"
       })
-		
-      formObj.append(str).submit();
+	
+ 	  var strr="";
+	  $(".sUploadResult ul li").each(function(i,obj){
+	    	  var jobj=$(obj);
 
+		  if($("#fName").length){ 
+			  console.log("aaa");
+			  strr+="<input type='hidden' name='attachList["+i+1+"].filename' value='"+jobj.data("filename")+"'>"
+	    	  strr+="<input type='hidden' name='attachList["+i+1+"].uuid' value='"+jobj.data("uuid")+"'>"
+	    	  strr+="<input type='hidden' name='attachList["+i+1+"].uploadpath' value='"+jobj.data("path")+"'>"
+	    	  strr+="<input type='hidden' name='attachList["+i+1+"].filetype' value='"+jobj.data("type")+"'>"
+			}
+			
+		  else{ 
+			  console.log("bbb");
+	    	  strr+="<input type='hidden' name='attachList["+i+"].filename' value='"+jobj.data("filename")+"'>"
+	    	  strr+="<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'>"
+	    	  strr+="<input type='hidden' name='attachList["+i+"].uploadpath' value='"+jobj.data("path")+"'>"
+	    	  strr+="<input type='hidden' name='attachList["+i+"].filetype' value='"+jobj.data("type")+"'>"
+			}
+
+	      })
+	  if(confirm("저장 하시겠습니까?")){formObj.append(str+strr).submit();}else{return false};
    })
    
    var regex = new RegExp("(.*?)\.(exe|js|sh|alz)$");
@@ -70,6 +104,9 @@ $(document).ready(function(e){
          url : '/fileUploadAjaxAction',
          processData : false,
          contentType : false,
+		 beforeSend: function(xhr){
+		            xhr.setRequestHeader(header, token)
+		        },
          data : formData,
          type : 'POST',
          dataType : 'json',
@@ -131,6 +168,9 @@ $(document).ready(function(e){
 			    url: '/fileDeleteFile',
 			    data: {fileName: targetFile, type:type},
 			    dataType:'text',
+				beforeSend: function(xhr){
+		            xhr.setRequestHeader(header, token)
+		        },
 			    type: 'POST',
 			      success: function(result){
 //			         alert(result);
@@ -153,37 +193,17 @@ $(document).ready(function(e){
 
 
 	//secondFile
-	if($("#fUploadResult ul").html()==""){console.log("noooooooooo")}
-	
-	   $("button[type='submit']").on("click",function(e){
-	
-	      e.preventDefault();
-	      
-	      var str="";
-	      
-	      $(".sUploadResult ul li").each(function(i,obj){
-	    	  var jobj=$(obj);
-
-			  if($("#fName").length){ 
-				  console.log("aaa");
-				  str+="<input type='hidden' name='attachList["+i+1+"].filename' value='"+jobj.data("filename")+"'>"
-		    	  str+="<input type='hidden' name='attachList["+i+1+"].uuid' value='"+jobj.data("uuid")+"'>"
-		    	  str+="<input type='hidden' name='attachList["+i+1+"].uploadpath' value='"+jobj.data("path")+"'>"
-		    	  str+="<input type='hidden' name='attachList["+i+1+"].filetype' value='"+jobj.data("type")+"'>"
-				}
-			
-			  else{ 
-				  console.log("bbb");
-		    	  str+="<input type='hidden' name='attachList["+i+"].filename' value='"+jobj.data("filename")+"'>"
-		    	  str+="<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'>"
-		    	  str+="<input type='hidden' name='attachList["+i+"].uploadpath' value='"+jobj.data("path")+"'>"
-		    	  str+="<input type='hidden' name='attachList["+i+"].filetype' value='"+jobj.data("type")+"'>"
-				}
-
-
-	      })
-	      formObj.append(str).submit();
-	   })
+//	if($("#fUploadResult ul").html()==""){console.log("noooooooooo")}
+//	
+//	   $("button[type='submit']").on("click",function(e){
+//	
+//	      e.preventDefault();
+//	      
+//	      var str="";
+//	      
+//	      
+//	      formObj.append(str);
+//	   })
 	   
 	   $("#sUploadFile").change(function(e) {
 		  var formData = new FormData();
@@ -207,6 +227,9 @@ $(document).ready(function(e){
 	         url : '/fileUploadAjaxAction',
 	         processData : false,
 	         contentType : false,
+			 beforeSend: function(xhr){
+			            xhr.setRequestHeader(header, token)
+			        },
 	         data : formData,
 	         type : 'POST',
 	         dataType : 'json',
@@ -267,6 +290,9 @@ $(document).ready(function(e){
 			    url: '/fileDeleteFile',
 			    data: {fileName: targetFile, type:type},
 			    dataType:'text',
+				beforeSend: function(xhr){
+		            xhr.setRequestHeader(header, token)
+		        },
 			    type: 'POST',
 			      success: function(result){
 //			         alert(result);

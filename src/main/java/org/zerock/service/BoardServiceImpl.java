@@ -23,6 +23,7 @@ public class BoardServiceImpl implements BoardService {
 	public BoardMapper mapper;
 	private BoardAttachMapper attachMapper;
 	private ReplyMapper replyMapper;
+
 	@Override
 	public List<BoardVO> list(Criteria cri) {
 		return mapper.list(cri);
@@ -51,7 +52,8 @@ public class BoardServiceImpl implements BoardService {
 	}
 	@Override
 	public void create(BoardVO vo) {
-		
+		System.out.println(vo.getText()+"<p><br></p>");
+		System.out.println(vo.getText()=="<p><br></p>");
 		mapper.create(vo);
 		
 		if(vo.getAttachList()==null || vo.getAttachList().size()<=0 ) {
@@ -67,7 +69,6 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public BoardVO read(int bno) {
-		System.out.println("이상없음");
 		mapper.updateHit(bno);
 		return mapper.read(bno);
 	}

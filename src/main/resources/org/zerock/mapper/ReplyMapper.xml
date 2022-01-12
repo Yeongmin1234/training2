@@ -4,30 +4,41 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.zerock.mapper.ReplyMapper">		<!-- namespace="페이지명.인터페이스명" -->
-	
-	<!-- 댓글쓰기(insert)		Create 	-->
+	<select id="selectAll" resultType="org.zerock.domain.ReplyVO">
+		select * from reply where rno>0
+	</select>
+	<select id="read" resultType="org.zerock.domain.ReplyVO">	<!-- select는 select 된 결과를 담을 그릇(resultType)이 필요 -->
+		select * from reply where rno = #{rno}
+	</select>
 	<insert id="insert">
 		insert into reply (bno, reply,reparent,redepth)	
 		values(#{bno}, #{reply}, #{reparent},#{redepth})
 	</insert>
-	<!-- 댓글상세페이지(select)	Read 	-->
-	<select id="read" resultType="org.zerock.domain.ReplyVO">	<!-- select는 select 된 결과를 담을 그릇(resultType)이 필요 -->
-		select * from reply where rno = #{rno}
-	</select>
-	<!-- 댓글삭제(delete)		Delete 	-->
-	
 	<delete id="delete">
 		delete from reply where rno = #{rno}
 	</delete>
-	<!-- 댓글수정(update)		Update 	-->
 	<update id="update">
 		update reply
 		set reply = #{reply},
-		reparent = #{reparent},
 		updateDate = now()
 		where rno = #{rno}
 	</update>
-	
+	<update id="delUpdate">
+		update reply
+		set replyer = "삭제된 댓글 입니다.",
+		reply = " ",
+		updateDate = now()
+		where rno = #{rno}
+	</update>
+	<select id="getList" resultType="org.zerock.domain.ReplyVO">
+		select * from (select @rownum:=@rownum+1 as rownum, b.*
+		        from (
+					select @rownum:=0
+		            ) as tmp, reply as b
+		            where bno = #{bno}						
+			) as boardList
+            order by if(reparent=0, rno, reparent),replyDate
+	</select>
 	<select id="getListWithPaging" resultType="org.zerock.domain.ReplyVO">
 		select * from (select @rownum:=@rownum+1 as rownum, b.*
 		        from (
@@ -40,7 +51,6 @@
 		    ]]>
             order by if(reparent=0, rno, reparent),replyDate
 	</select>
-	
 	<select id="getCountByBno" resultType="int">
 		select count(rno) from reply where bno = #{bno}
 	</select>
@@ -49,8 +59,5 @@
 	</select>
 	<delete id="deleteAll">
   		delete from reply where bno=#{bno}
-  	</delete>
-  	<delete id="deleteRe">
-  		delete from reply where reparent=#{rno}
   	</delete>
 </mapper>

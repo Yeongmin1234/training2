@@ -38,10 +38,6 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "login";
-	}
-	@GetMapping("sample")
-	public void sample() {
-		
+		return "main";
 	}
 }

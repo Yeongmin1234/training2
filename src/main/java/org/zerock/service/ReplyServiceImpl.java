@@ -23,6 +23,12 @@ public class ReplyServiceImpl implements ReplyService {
 	private ReplyMapper mapper;
 	private BoardMapper boardmapper;
 
+	
+	@Override
+	public List<ReplyVO> selectAll() {
+		return mapper.selectAll();
+	}
+	
 	@Transactional
 	@Override
 	public int register(ReplyVO vo) {
@@ -40,11 +46,7 @@ public class ReplyServiceImpl implements ReplyService {
 	@Transactional
 	@Override
 	public int remove(int rno) {
-		log.info("remove good....." + rno);
 		ReplyVO vo = mapper.read(rno);
-		log.info("service "+ rno);
-		mapper.deleteRe(rno);
-		
 		boardmapper.updateReplyCnt(vo.getBno(), -1);
 		return mapper.delete(rno);
 	}
@@ -56,10 +58,10 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 	
 	@Override
-	public List<ReplyVO> getList(Criteria cri, int bno) {
-		return mapper.getListWithPaging(cri, bno);
+	public List<ReplyVO> getList(Criteria cri,int bno) {
+		return mapper.getList(cri,bno);
 	}
-
+	
 	@Override
 	public ReplyPageDTO getListPage(Criteria cri, int bno) {
 		log.info("get Reply List of a Board : " + bno);
@@ -69,7 +71,12 @@ public class ReplyServiceImpl implements ReplyService {
 		
 	}
 
-	
+	@Override
+	public int delUpdate(ReplyVO vo) {
+
+		return mapper.delUpdate(vo);
+	}
+
 	
 
 }

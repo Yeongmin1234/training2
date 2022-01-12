@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +30,16 @@ public class ReplyController {
 	
 	ReplyService service;
 	
-	
+	@PreAuthorize("isAuthenticated()") 
 	@PostMapping(value = "/new",
 				 consumes = "application/json",
 				 produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> create(@RequestBody ReplyVO vo) {
+		
+		
+		if(vo.getReply().equals(" ") || vo.getReply().length()==0 ) {
+			return null;
+		}
 		
 		int insertCount = service.register(vo);
 		
@@ -46,15 +52,28 @@ public class ReplyController {
 			produces = {
 					MediaType.APPLICATION_XML_VALUE,
 					MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public ResponseEntity<ReplyPageDTO> getList(
+	public ResponseEntity<List<ReplyVO>> getList(
 			@PathVariable("bno") int bno,
 			@PathVariable("page") int page) {
 		
 		Criteria cri = new Criteria(page, 10);
 		
-//		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
-		return new ResponseEntity<>(service.getListPage(cri, bno), HttpStatus.OK);
+		return new ResponseEntity<>(service.getList(cri,bno), HttpStatus.OK);
 	}
+//	
+//	@GetMapping(value = "/pages/{bno}/{page}",
+//			produces = {
+//					MediaType.APPLICATION_XML_VALUE,
+//					MediaType.APPLICATION_JSON_UTF8_VALUE })
+//	public ResponseEntity<ReplyPageDTO> getList(
+//			@PathVariable("bno") int bno,
+//			@PathVariable("page") int page) {
+//		
+//		Criteria cri = new Criteria(page, 10);
+//		
+////		return new ResponseEntity<>(service.getList(cri, bno), HttpStatus.OK);
+//		return new ResponseEntity<>(service.getListPage(cri, bno), HttpStatus.OK);
+//	}
 	
 	@GetMapping(value = "/{rno}", produces = {
 			MediaType.APPLICATION_XML_VALUE,
@@ -71,11 +90,26 @@ public class ReplyController {
 				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	@PostMapping(value="/{rno}",
+			consumes = "application/json",
+			produces = {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> delUpdate(@PathVariable("rno") int rno,
+			@RequestBody ReplyVO vo) {
+		vo.setRno(rno);
+		log.info("aaa");
+		return service.delUpdate(vo) == 1
+						? new ResponseEntity<>("success", HttpStatus.OK)
+						: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+	}
+	
 	@PutMapping(value="/{rno}",
 				consumes = "application/json",
 				produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> modify(@PathVariable("rno") int rno,
 									  	  @RequestBody ReplyVO vo) {
+		if(vo.getReply().equals(" ") || vo.getReply().length()==0 ) {
+			return null;
+		}
 		vo.setRno(rno);
 		log.info("aaa");
 		return service.modify(vo) == 1

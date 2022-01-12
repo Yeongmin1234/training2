@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,8 +36,8 @@ import lombok.extern.log4j.Log4j;
 @Controller
 @AllArgsConstructor
 @RequestMapping(value="board")
-
 public class BoardController {
+	
 	
 	public BoardService service;
 	UploadController upload;
@@ -46,8 +47,6 @@ public class BoardController {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);  
         
-//        System.out.println(cal.getTime()); 
-//        System.out.println(nowday);
         System.out.println(service.list(cri));
         model.addAttribute("nowday",cal.getTime());
 		model.addAttribute("pinList", service.pinList(cri));
@@ -61,8 +60,6 @@ public class BoardController {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);  
         
-//        System.out.println(cal.getTime()); 
-//        System.out.println(nowday);
         System.out.println(service.list(cri));
         model.addAttribute("nowday",cal.getTime());
 		model.addAttribute("pinList", service.pinEachList(cri));
@@ -70,18 +67,19 @@ public class BoardController {
 		int total= service.etotalCount(cri);
 		model.addAttribute("pageMaker", new PageDTO(cri,total));
 	}
+	
 	@GetMapping("create")
 	public void create() {
 	}
 	@PostMapping("create")
 	public String create(BoardVO vo, RedirectAttributes rttr, Model model) {
-		log.info(vo.getTitle());
-		log.info(vo.getText());
-		if(vo.getTitle().length()==0 || vo.getTitle() == " " || vo.getText().length()==0 || vo.getText() == "<p>&nbsp;</p>") {
-			return "redirect:/board/create";
-		} else if(vo.getText() == "<p><br></p>") {
-			System.out.println("dkdkdkddk");
-			return "redirect:/board/create";
+		
+		
+		if(vo.getTitle().length()==0 || vo.getTitle().equals(" ")) {
+			return null;
+		}
+		if(vo.getText().equals("<p><br></p>") || vo.getText().length()==0 || vo.getText().equals("<p>&nbsp;</p>")) {
+			return null;
 		}
 		System.out.println(vo);
 		service.create(vo);
@@ -90,9 +88,11 @@ public class BoardController {
 	}
 	@GetMapping("read")
 	public void read(int bno, Model model,BoardAttachVO vo) {
-		System.out.println(service.read(bno));
+		
+		
 		model.addAttribute("read", service.read(bno));
 	}
+	
 	@GetMapping("update")
 	public void update(int bno, Model model) {
 		System.out.println("¿Ã∞≈æﬂ!"+service.read(bno));
@@ -100,11 +100,11 @@ public class BoardController {
 	}
 	@PostMapping("update")
 	public String modifyPostNo(BoardVO vo,RedirectAttributes rttr, Model model) {
-		if(vo.getTitle().length()==0 || vo.getTitle() == " " || vo.getText().length()==0 || vo.getText() == "<p>&nbsp;</p>") {
-			return "redirect:/board/update";
-		} else if(vo.getText() == "<p><br></p>") {
-			System.out.println("dkdkdkddk");
-			return "redirect:/board/update";
+		if(vo.getTitle().length()==0 || vo.getTitle().equals(" ")) {
+			return null;
+		}
+		if(vo.getText().equals("<p><br></p>") || vo.getText().length()==0 || vo.getText().equals("<p>&nbsp;</p>")) {
+			return null;
 		}
 		System.out.println(service.update(vo));
 		model.addAttribute("update", service.update(vo));
