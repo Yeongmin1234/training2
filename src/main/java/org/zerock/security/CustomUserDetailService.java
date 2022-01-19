@@ -7,7 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.zerock.domain.CustomUser;
 import org.zerock.domain.MemberVO;
 import org.zerock.mapper.MemberMapper;
- 
+
+import jdk.internal.org.jline.utils.Log;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
  
@@ -19,16 +20,14 @@ public class CustomUserDetailService implements UserDetailsService {
  
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        
-        log.warn("load user by userName:" + username);
-    
+
+    	log.warn("¿©±â´Â loadUserByUsername");
+    	
         MemberVO vo = memberMapper.read(username);
         
-        log.warn("member mapper" + vo);
+//        log.warn("member mapper" + vo.getUserpw());
         
         return vo == null ? null : new CustomUser(vo);
     }
-    
-    
     
 }

@@ -5,18 +5,19 @@
 <mapper namespace="org.zerock.mapper.BoardMapper">
 
 	<select id="list" resultType="org.zerock.domain.BoardVO">
-	select rownum, bno, title, writer, text, date,replyCnt,hit,cate,pin,file
+	select rownum, bno, title, writer, text, date, updateDate,replyCnt,hit,cate,pin,file
 		from (
 			select @rownum:=@rownum+1 as rownum, b.* 
 			from (
 				select @rownum:=0
 				) as tmp, board as b
-			order by bno desc
+			order by date desc
 		) as boardlist	
 		<![CDATA[
 			where rownum > (#{pageNum} - 1) * #{amount} and rownum <= #{pageNum} * #{amount}
+			and date < now() 
 		]]>
-		 and pin=0
+		and pin=0
 		<choose>
 			<when test="type=='T'.toString()">	<!-- ''은 char 타입이라서 .toString() 적용 -->
 				and title like concat('%', #{keyword}, '%')  <!-- concat : 문자열을 이어주는 mysql 함수 -->	
@@ -28,13 +29,13 @@
 				and writer like concat('%', #{keyword}, '%')	
 			</when>
 			<when test="allType=='TC'.toString()">
-				and title like concat('%',#{allKeyword},'%') or text like concat('%',#{allKeyword},'%')
+				and (title like concat('%',#{allKeyword},'%') or text like concat('%',#{allKeyword},'%'))
 			</when>
 		</choose>
 	</select>	
 	
 	<select id="pinList" resultType="org.zerock.domain.BoardVO">
-	select bno, title, writer, text, date,replyCnt,hit,cate,pin,file
+	select bno, title, writer, text, date, updateDate,replyCnt,hit,cate,pin,file
 		from (
 			select @rownum:=@rownum+1 as rownum, b.* 
 			from (
@@ -42,27 +43,25 @@
 				) as tmp, board as b
 		) as boardlist	
 			where pin=1
+		<![CDATA[
+			and date < now() 
+		]]>
 		order by date desc, pin desc limit 3
 	</select>	
-
-
-
-
-
-
 	<select id="eachList" resultType="org.zerock.domain.BoardVO">
-	select rownum, bno, title, writer, text, date,replyCnt,hit,cate,pin,file
+	select rownum, bno, title, writer, text, date, updateDate,replyCnt,hit,cate,pin,file
 		from (
 			select @rownum:=@rownum+1 as rownum, b.* 
 			from (
 				select @rownum:=0
 				) as tmp, board as b
-			order by bno desc
+			order by date desc
 		) as boardlist	
 		where cate = #{cate}
 		and pin=0
 		<![CDATA[
  			and rownum > (#{pageNum} - 1) * #{amount} and rownum <= #{pageNum} * #{amount}
+ 			and date < now() 
 		]]> 
 		<choose>
 			<when test="type=='T'.toString()">	
@@ -79,7 +78,7 @@
 	
 	
 	<select id="pinEachList" resultType="org.zerock.domain.BoardVO">
-	select  bno, title, writer, text, date,replyCnt,hit,cate,pin,file
+	select  bno, title, writer, text, date, updateDate,replyCnt,hit,cate,pin,file
 		from (
 			select @rownum:=@rownum+1 as rownum, b.* 
 			from (
@@ -88,6 +87,9 @@
 		) as boardlist	
 <!-- 		where cate = #{cate} -->
 		where pin=1
+		<![CDATA[
+			and date < now() 
+		]]>
 		order by date desc, pin desc limit 3
 	</select>	
 	
@@ -108,6 +110,9 @@
 			<when test="type=='W'.toString()">
 				and writer like concat('%', #{keyword}, '%')	
 			</when>
+			<when test="allType=='TC'.toString()">
+				and (title like concat('%',#{allKeyword},'%') or text like concat('%',#{allKeyword},'%'))
+			</when>
 		</choose>
 	</select>
 	
@@ -123,23 +128,27 @@
 			<when test="type=='W'.toString()">
 				and writer like concat('%', #{keyword}, '%')	
 			</when>
+			<when test="allType=='TC'.toString()">
+				and (title like concat('%',#{allKeyword},'%') or text like concat('%',#{allKeyword},'%'))
+			</when>
 		</choose>
 	</select>
 	
 	
 	<insert id="create">
-		insert into board (title,text,writer,cate,pin,file) values(#{title},#{text},#{writer},#{cate},#{pin},#{file}) 
+		insert into board (title,text,writer,date,cate,pin,file) values(#{title},#{text},#{writer},#{date},#{cate},#{pin},#{file}) 
 		<selectKey keyProperty="bno" order="AFTER" resultType="int">
 			select max(bno) from board
 		</selectKey>
 	</insert>
 	<select id="read" resultType="org.zerock.domain.BoardVO">
-		select * from board where bno = #{bno}
+		select * from board where bno = #{bno} and cate=#{cate}
 	</select>
 	<update id="update">
 		update board
 		set title=#{title},
 			text=#{text},
+			updateDate=#{updateDate},
 			cate=#{cate},
 			pin=#{pin},
 			file=#{file}
@@ -157,4 +166,7 @@
 		update board set hit = hit + 1
 		where bno = #{bno}
 	</update>
+	<select id="boardCnt" resultType="int">
+		select count(*) from board where writer=#{writer};
+	</select>
 </mapper>

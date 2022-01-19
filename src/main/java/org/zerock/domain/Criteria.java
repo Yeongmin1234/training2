@@ -31,6 +31,8 @@ public class Criteria {
 				.queryParam("cate", this.getCate())
 				.queryParam("pageNum", this.pageNum)
 				.queryParam("amount", this.getAmount())
+				.queryParam("allType", this.getAllType())
+				.queryParam("allKeyword", this.getAllKeyword())
 				.queryParam("type", this.getType())
 				.queryParam("keyword", this.getKeyword());
 		return builder.toString();

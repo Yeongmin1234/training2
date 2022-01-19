@@ -48,7 +48,9 @@
                 <div  style="position:relative;">
                     <p>
                        <strong><span><sec:authentication property="principal.member.userName"/>&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
-                       <em class="cateInfo" style="cursor:pointer;">3등급</em>
+                        <em class="cateInfo" style="cursor:pointer;">
+                    		<sec:authentication property="principal.member.cate"/> 등급
+                        </em>
                    </p>
                    <div style="position:absolute;top:-2px;right:44px;">
 	                    <form action="/logout" method="post">
@@ -61,10 +63,12 @@
                 </div>
                   <div class="search" style="position: absolute;top: 39px;right: 137px;">
 	                    <div>
-	                        <form id="allSearchForm" action="/board/list" method="get">
-	                            <select style="display:none;" name="allType">
+	                        <form id="allSearchForm" action="/board/searchAll" method="get">
+	                            <select style="display:none;"  name="allType">
 	                                <option value="TC" <c:out value="${pageMaker.cri.allType=='TC'?'selected':''}" />>제목+내용</option>
 	                            </select>
+	                            <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
+	                            <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
 	                            <input type="text" name="allKeyword" value="${pageMaker.cri.allKeyword}" style="width: 200px;border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
 	                            <button class="btn">검&nbsp;색</button>		
 	                        </form>
@@ -110,22 +114,26 @@
              <form role='form' method="post" action="create">
             	<div>
 		            <div>
-		            	<h2 style="margin-bottom: 30px;">1등급 게시판</h2>
+		            	<h2 style="margin-bottom: 30px;">글쓰기</h2>
 		            	 <table>
-		            	 	<tr><th style="width: 100px;">작성자</th><td style="width: 90%;" colspan='3'><input name="writer" value='<sec:authentication property="principal.member.userName"/>' style="outline:none;" readonly="readonly"></td></tr>
-		            	 	<tr><th style="width: 10%;">카테고리</th>
-		            	 				<td style="display:none;">
-			            	 				<select class="cate">					
-										       <option>카테고리</option>
-										       <option>카테고리</option>
-										       <option>카테고리</option>
-										       <option>카테고리</option>
+		            	 	<tr><th class="private" style="width: 10%;display:none;">카테고리</th><th class="public" style="width: 3%;">카테고리</th>
+		            	 				<td class="private"  colspan='3' style="display:none;">
+						            	 	<input type="hidden" name="writer" value='<sec:authentication property="principal.member.userName"/>' style="outline:none;" readonly="readonly">
+			            	 				<select id="cate" style="width: 90px;">					
+										       <option value="0">공지</option>
+										       <option value="1">1등급</option>
+										       <option value="2">2등급</option>
+										       <option value="3">3등급</option>
 										    </select>
 		            	 				</td>
-		            	 	<td style="width: 30%;" colspan='3'><input type="text" name="cate" value="0"></td><th style="display:none;">게시일</th><td style="display:none;"> 
+		            	 	<td  class="public" style="width: 30%;" colspan='3'><input name="cate" value='<sec:authentication property="principal.member.cate"/>' style="outline:none;" readonly="readonly"><span style="position: absolute;top: 12px;left: 25px;">등급</span></td>
+		            	 	</tr>
+		            	 	<tr class="private" style="display:none;">
+		            	 	<th>게시일</th>
+		            	 		<td colspan='3'> 
 		            	 			<div class="tui">
+		            	 				<input type="hidden" name="date" value="" style="outline:none;" readonly="readonly">
 			                            <div class="tui-box">
-			                                <div class="tui-tit">게재 일시(KST) :</div>
 			                                <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
 			                                    <input type="text" id="start-date-picker-target" aria-label="Date-Time" autocomplete="off" />
 			                                    <span class="tui-ico-date"></span>
@@ -227,16 +235,16 @@
 			                                            <div class="tui-timepicker-row">
 			                                                <div class="tui-timepicker-column tui-timepicker-selectbox tui-timepicker-hour">
 			                                                    <select class="tui-timepicker-select" aria-label="Time">
-			                                                        <option value="0">0</option>
-			                                                        <option value="1">1</option>
-			                                                        <option value="2">2</option>
-			                                                        <option value="3">3</option>
-			                                                        <option value="4">4</option>
-			                                                        <option value="5">5</option>
-			                                                        <option value="6">6</option>
-			                                                        <option value="7">7</option>
-			                                                        <option value="8">8</option>
-			                                                        <option value="9">9</option>
+			                                                        <option value="00">00</option>
+			                                                        <option value="01">01</option>
+			                                                        <option value="02">02</option>
+			                                                        <option value="03">03</option>
+			                                                        <option value="04">04</option>
+			                                                        <option value="05">05</option>
+			                                                        <option value="06">06</option>
+			                                                        <option value="07">07</option>
+			                                                        <option value="08">08</option>
+			                                                        <option value="09">09</option>
 			                                                        <option value="10">10</option>
 			                                                        <option value="11">11</option>
 			                                                        <option value="12">12</option>
@@ -256,16 +264,16 @@
 			                                                <span class="tui-timepicker-column tui-timepicker-colon"><span class="tui-ico-colon">:</span></span>
 			                                                <div class="tui-timepicker-column tui-timepicker-selectbox tui-timepicker-minute">
 			                                                    <select class="tui-timepicker-select" aria-label="Time">
-			                                                        <option value="0">0</option>
-			                                                        <option value="1">1</option>
-			                                                        <option value="2">2</option>
-			                                                        <option value="3">3</option>
-			                                                        <option value="4">4</option>
-			                                                        <option value="5">5</option>
-			                                                        <option value="6">6</option>
-			                                                        <option value="7">7</option>
-			                                                        <option value="8">8</option>
-			                                                        <option value="9">9</option>
+			                                                        <option value="00">00</option>
+			                                                        <option value="01">01</option>
+			                                                        <option value="02">02</option>
+			                                                        <option value="03">03</option>
+			                                                        <option value="04">04</option>
+			                                                        <option value="05">05</option>
+			                                                        <option value="06">06</option>
+			                                                        <option value="07">07</option>
+			                                                        <option value="08">08</option>
+			                                                        <option value="09">09</option>
 			                                                        <option value="10">10</option>
 			                                                        <option value="11">11</option>
 			                                                        <option value="12">12</option>
@@ -531,7 +539,7 @@
 		            	 		<td colspan='3'>
 		            	 			<div  style="display:flex;" >
 			            	 			<input type="text" id="title" name="title" style="outline:none;width: 600px;border: 1px solid #ababab;" placeholder="제목을 입력해주세요." />  
-			            	 			<span style="margin-left:10px;">
+			            	 			<span class="private" style="margin-left:10px;display:none;">
 	                                        <input type="checkbox" id="fixedTop" name="pin" value=""/>
 	                                        <label for="fixedTop">상단 고정 <i class="checkbox"></i></label>
 	                                    </span>
@@ -590,7 +598,7 @@
 	            	 </div>
 	       	    	 <div>
 	       	    	 	<input type="hidden" name="file">
-	                    <button type="submit" class="button" style="position:absolute;bottom:-30px;right: 80px;" onclick="save()">등록</button>
+	                    <button type="submit" class="button" id="button" style="position:absolute;bottom:-30px;right: 80px;" onclick="save()">등록</button>
 	                    <div><a class="button close" href="/board/list" style="position:absolute;bottom:-30px;right: 30px;">취소</a></div>
 	                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token }" />
 	                 </div>
@@ -608,8 +616,41 @@
 			<p>* 2등급 : 3등급 게시판 조회 불가</p>
 		</div>
         <script>
-        
+        if($("input[name='writer']").val()=="관리자"){
+        	$(".private").css('display','');
+        	$(".public").css('display','none');
+        $("#button").click(function(e){
+	        	e.preventDefault(); 
+	        	var cate=$("#cate option:selected").val(); 
+	        	$("input[name='cate']").val(cate)
+	           var nowDate;
+	 		   var boardDate=$("input[name='date']")
+	 		    	
+	 	   	   if($(".tui-timepicker-hour select").val()<10){
+	 	   			if($(".tui-timepicker-minute select").val()<10){
+	 			        nowDate=new Date($("#start-date-picker-target").val()+" 0"+$(".tui-timepicker-hour select").val()+":0"+$(".tui-timepicker-minute select").val()+":00");
+	 	   			} else{
+	 	   				nowDate=new Date($("#start-date-picker-target").val()+" 0"+$(".tui-timepicker-hour select").val()+":"+$(".tui-timepicker-minute select").val()+":00");
+	 	   			}
+	 		    } else{
+	 		       	if($(".tui-timepicker-minute select").val()<10){
+	 	        		nowDate=new Date($("#start-date-picker-target").val()+" "+$(".tui-timepicker-hour select").val()+":0"+$(".tui-timepicker-minute select").val()+":00");
+	 	        	} else{
+	 	        		nowDate=new Date($("#start-date-picker-target").val()+" "+$(".tui-timepicker-hour select").val()+":"+$(".tui-timepicker-minute select").val()+":00"); 
+	 	        	}
+	 		        	 
+	 		    }
+	  	        boardDate.val(nowDate);
+	        })
+        }else{
+	        $("#button").click(function(){
+	           var nowDate=new Date();
+			   var boardDate=$("input[name='date']")
+	 	        boardDate.val(nowDate);
+	        })	
+        }
         if($("input[name='allKeyword']").val().length!=0){$(".pager").css('opacity','0');}
+        
 		$(".cateInfo").click(function(){$(".cateTxt").show(500)});
 		$("#close").click(function(){$(".cateTxt").hide(500)});
 		

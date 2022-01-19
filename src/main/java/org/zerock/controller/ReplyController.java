@@ -40,7 +40,9 @@ public class ReplyController {
 		if(vo.getReply().equals(" ") || vo.getReply().length()==0 ) {
 			return null;
 		}
-		
+		if(vo.getRedepth()==3) {
+			return null;
+		}
 		int insertCount = service.register(vo);
 		
 		return insertCount == 1
@@ -83,6 +85,7 @@ public class ReplyController {
 		return new ResponseEntity<>(service.get(rno), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("principal.username == #vo.replyer")
 	@DeleteMapping(value="/{rno}", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> remove(@PathVariable("rno") int rno) {
 		return service.remove(rno) == 1

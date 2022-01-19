@@ -20,6 +20,8 @@ public class PageDTO {
 	private boolean prev, next,firstPage,lastPage;
 	// tbl_board 테이블의 전체 개수
 	private int total;
+	
+	private int searchTotal;
 	// Criteria
 	private Criteria cri;
 	

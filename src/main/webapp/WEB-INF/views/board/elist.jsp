@@ -108,7 +108,9 @@
                 <div  style="position:relative;">
                    <p>
                        <strong><span><sec:authentication property="principal.member.userName"/>&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
-                       <em class="cateInfo" style="cursor:pointer;">3등급</em>
+                        <em class="cateInfo" style="cursor:pointer;">
+	                    		<sec:authentication property="principal.member.cate"/> 등급
+	                        </em>
                    </p>
                    <div style="position:absolute;top:-2px;right:44px;">
 	                   <form action="/logout" method="post">
@@ -120,12 +122,12 @@
                 </div>
                  <div class="search" style="position: absolute;top: 39px;right: 137px;">
 	                    <div>
-	                        <form id="allSearchForm" action="/board/list" method="get">
-	                            <select style="display:none;" name="allType">
+	                        <form id="allSearchForm" action="/board/searchAll" method="get">
+	                            <select style="display:none;"  name="allType">
 	                                <option value="TC" <c:out value="${pageMaker.cri.allType=='TC'?'selected':''}" />>제목+내용</option>
 	                            </select>
 	                            <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
-	                            <input type="hidden" name="amount" value="${pageMaker.cri.amount}">	
+	                            <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
 	                            <input type="text" name="allKeyword" value="${pageMaker.cri.allKeyword}" style="width: 200px;border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
 	                            <button class="btn">검&nbsp;색</button>		
 	                        </form>
@@ -203,7 +205,7 @@
 												N
 				                            </span>
 			                            </c:if>
-			                            <a href="/board/read?bno=${list.bno}">${list.title}</a>[${list.replyCnt}]
+		                            	<a href="/board/read?bno=${list.bno}&&cate=${list.cate}">${list.title}</a>[${list.replyCnt}]
 			                            <c:if test="${list.file==1}">
 		                            	<span><img src="/resources/images/clip.png" style="width: 16px;height: 16px;margin: 10px;"></span>
 		                            </c:if>
@@ -232,7 +234,7 @@
 												N
 				                            </span>
 			                            </c:if>
-			                            <a href="/board/read?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]
+		                            	<a href="/board/read/${boardlist.cate}?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]
 			                            <c:if test="${boardlist.file==1}">
 		                            	<span><img src="/resources/images/clip.png" style="width: 16px;height: 16px;margin: 10px;"></span>
 		                            </c:if>
@@ -293,8 +295,8 @@
 		<div style="position: absolute;top: 220px;right: 65px;background-color: aliceblue;width: 400px;height: 185px;">
 			<div style="margin: 26px 0 0 28px;">
 				<p style="font-size: 33px;margin-bottom: 21px;"><sec:authentication property="principal.member.userName"/></p>
-				<p style="font-size: 21px;margin-bottom: 21px;">000팀</p>
-				<p >010 - 1234 - 5678</p>
+				<p style="font-size: 21px;margin-bottom: 21px;"><sec:authentication property="principal.member.dept"/> 팀</p>
+				<p><sec:authentication property="principal.member.phone"/></p>
 			</div>
 		</div>       
 		<div style="position: absolute;top: 420px;right: 65px;background-color: aliceblue;width: 400px;height: 300px;">
@@ -329,6 +331,17 @@
 			<p>* 2등급 : 3등급 게시판 조회 불가</p>
 		</div>
 		<script>
+			var cate=$(".cateInfo").text();
+			var orgCate=cate.replace(/[^0-9]/g,'');
+			$(".title").on("click","a",function(){
+				var boCate=$(this).parent().siblings(".cate").text();
+				var	orgBoCate=boCate.replace(/[^0-9]/g,'');
+				
+				if(orgCate<orgBoCate && orgCate!=0){
+					alert("등급이 맞지 않아 조회가 불가능 합니다.");
+					return false;
+				}
+			})
 			if($("input[name='allKeyword']").val().length!=0){$(".pager").css('opacity','0');}
 			$(".cateInfo").click(function(){$(".cateTxt").show(500)});
 			$(".close").click(function(){$(".cateTxt").hide(500)});

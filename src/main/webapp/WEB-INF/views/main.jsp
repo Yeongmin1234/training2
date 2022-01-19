@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>	
 <!DOCTYPE html>
 <html lang="ko">
     <head>
@@ -30,14 +32,16 @@
                 	<div class="inputBox">
 	                	 <input placeholder=" 아이디" name="username" type="text" autofocus>
 	                     <input  placeholder="비밀번호" name="password" type="password" value="">
+					     <p style="color:red;">${error}</p>
                     </div>
                     <button type="submit" id="btn-success">로그인</button>
-                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 </form>
             	<div style="position: absolute;top: 270px;right: 250px;font-size: 17px;">@gamedex.co.kr</div>
             </div>
 		</div>
-		<script type="text/javascript">
+		<script type="text/javascript">	
+		
 		    $("#btn-success").on("click", function(e){
 		    	e.preventDefault();
 		    	var id=$("input[name='username']").val();
@@ -51,8 +55,11 @@
 		       } else if(pw.length==0 || !pwPattern.test(pw)){
 		    	   alert("일시적인 오류가 발생하였습니다. 다시 시도해 주세요.");
 		    	   return false;
-		       }
-		       $("form").submit();
+		       } else{
+// 		    	   $("form").attr("action", "/login");
+					$("form").submit();
+				}
+// 		       $("form").submit();
 		    });
 		</script>
     </body>

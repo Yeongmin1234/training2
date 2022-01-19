@@ -129,7 +129,7 @@
 	                                <option value="TC" <c:out value="${pageMaker.cri.allType=='TC'?'selected':''}" />>제목+내용</option>
 	                            </select>
 	                            <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
-	                            <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+	                             <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
 	                            <input type="text" name="allKeyword" value="${pageMaker.cri.allKeyword}" style="width: 200px;border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
 	                            <button class="btn">검&nbsp;색</button>		
 	                        </form>
@@ -237,7 +237,7 @@
 											N
 			                            </span>
 		                            </c:if>
-		                            <a href="/board/read/${boardlist.cate}?bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]
+		                            <a href="/board/read?cate=${boardlist.cate}&bno=${boardlist.bno}">${boardlist.title}</a>[${boardlist.replyCnt}]
 		                            <c:if test="${boardlist.file==1}">
 		                            	<span><img src="/resources/images/clip.png" style="width: 16px;height: 16px;margin: 10px;"></span>
 		                            </c:if>
@@ -271,21 +271,21 @@
 	                <div class="pager">
 	                    <ul>
 	                    	<c:if test="${pageMaker.prev}">
-	                        	<li><a href="/board/list?type=${pageMaker.cri.type}&keyword=${pageMaker.cri.keyword}&pageNum=${pageMaker.first}&amount=${pageMaker.cri.amount}">◀◀</a></li>
+	                        	<li><a href="/board/searchAll?allType=${pageMaker.cri.allType}&allKeyword=${pageMaker.cri.allKeyword}&pageNum=${pageMaker.first}&amount=${pageMaker.cri.amount}">◀◀</a></li>
 	                        </c:if>
 	                        <c:if test="${pageMaker.prev}">
-	                            <li><a href="/board/list?type=${pageMaker.cri.type}&keyword=${pageMaker.cri.keyword}&pageNum=${pageMaker.startPage - 1}&amount=${pageMaker.cri.amount}" class="prev"></a></li>
+	                            <li><a href="/board/searchAll?allType=${pageMaker.cri.allType}&allKeyword=${pageMaker.cri.allKeyword}&pageNum=${pageMaker.startPage - 1}&amount=${pageMaker.cri.amount}">이전</a></li>
 	                        </c:if>
 	                        <c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
 	                            <li class="${pageMaker.cri.pageNum==num?'active':''}">
-	                                <a href="/board/list?type=${pageMaker.cri.type}&keyword=${pageMaker.cri.keyword}&pageNum=${num}&amount=${pageMaker.cri.amount}">${num}</a>
+	                                <a href="/board/searchAll?allType=${pageMaker.cri.allType}&allKeyword=${pageMaker.cri.allKeyword}&pageNum=${num}&amount=${pageMaker.cri.amount}">${num}</a>
 	                            </li>
 	                        </c:forEach>
 	                        <c:if test="${pageMaker.next}">
-	                            <li><a href="/board/list?type=${pageMaker.cri.type}&keyword=${pageMaker.cri.keyword}&pageNum=${pageMaker.endPage + 1}&amount=${pageMaker.cri.amount}" class="next"></a></li>
+	                            <li><a href="/board/searchAll?allType=${pageMaker.cri.allType}&allKeyword=${pageMaker.cri.allKeyword}&pageNum=${pageMaker.endPage + 1}&amount=${pageMaker.cri.amount}">다음</a></li>
 	                        </c:if>
 	                        <c:if test="${pageMaker.next}">
-	                        	<li><a href="/board/list?type=${pageMaker.cri.type}&keyword=${pageMaker.cri.keyword}&pageNum=${pageMaker.last}&amount=${pageMaker.cri.amount}">▶▶</a></li>
+	                        	<li><a href="/board/searchAll?allType=${pageMaker.cri.allType}&allKeyword=${pageMaker.cri.allKeyword}&pageNum=${pageMaker.last}&amount=${pageMaker.cri.amount}">▶▶</a></li>
 	                        </c:if>
 	                    </ul>
 	                </div> <!--.Pager-->

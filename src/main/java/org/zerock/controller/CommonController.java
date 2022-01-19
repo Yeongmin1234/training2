@@ -14,23 +14,7 @@ import lombok.extern.log4j.Log4j;
 public class CommonController {
 	@GetMapping("/accessError")
 	public void acessDenied(Authentication auth,Model model) {
-//		WebSecurityConfigurerAdapter.configure(HttpSecurity http);
 		log.info("access Denied : "+ auth);
-		model.addAttribute("msg","Access Denied");
-	}
-	@GetMapping("/customLogin")
-	public void loginInput(String error, String logout, Model model) {
-		log.info("success");
-		if(error!=null) {
-			model.addAttribute("error", "Login Error Check Your Account");
-		}
-		
-		if(logout!=null) {
-			model.addAttribute("logout", "Logout!!");
-		}
-	}
-	@GetMapping("/customLogout")
-	public void logoutGet() {
-		log.info("success");
+		model.addAttribute("msg","등급이 맞지않아 접근이 제한됩니다");
 	}
 }

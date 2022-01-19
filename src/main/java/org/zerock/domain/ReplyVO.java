@@ -18,6 +18,4 @@ public class ReplyVO {
 	private Date updateDate;
 	private int reparent;
     private int redepth;
-    private int reorder;
-
 }

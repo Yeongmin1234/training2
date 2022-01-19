@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,12 +43,21 @@ public class BoardController {
 	public BoardService service;
 	UploadController upload;
 	
+	@GetMapping("searchAll")
+	public void searchAll(Model model,Criteria cri) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DAY_OF_MONTH, -1);  
+		model.addAttribute("nowday",cal.getTime());
+		model.addAttribute("pinList", service.pinList(cri));
+		model.addAttribute("list", service.list(cri));
+		int total= service.totalCount(cri);
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+	}
+	
 	@GetMapping("list")
 	public void list(Model model,Criteria cri) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);  
-        
-        System.out.println(service.list(cri));
         model.addAttribute("nowday",cal.getTime());
 		model.addAttribute("pinList", service.pinList(cri));
 		model.addAttribute("list", service.list(cri));
@@ -59,7 +69,6 @@ public class BoardController {
 	public void eachList(Model model,Criteria cri) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);  
-        
         System.out.println(service.list(cri));
         model.addAttribute("nowday",cal.getTime());
 		model.addAttribute("pinList", service.pinEachList(cri));
@@ -68,9 +77,12 @@ public class BoardController {
 		model.addAttribute("pageMaker", new PageDTO(cri,total));
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("create")
 	public void create() {
 	}
+	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("create")
 	public String create(BoardVO vo, RedirectAttributes rttr, Model model) {
 		
@@ -81,22 +93,26 @@ public class BoardController {
 		if(vo.getText().equals("<p><br></p>") || vo.getText().length()==0 || vo.getText().equals("<p>&nbsp;</p>")) {
 			return null;
 		}
-		System.out.println(vo);
+		System.out.println("controller : "+ vo);
 		service.create(vo);
 		rttr.addAttribute("bno", vo.getBno());
+		rttr.addAttribute("cate", vo.getCate());
 		return "redirect:/board/read";
 	}
-	@GetMapping("read")
-	public void read(int bno, Model model,BoardAttachVO vo) {
+	@GetMapping("read/{cate}")
+	public String read(int bno, Model model,BoardVO vo,@PathVariable int cate) {
+		vo.setBno(bno);
+		vo.setCate(bno);
+		System.out.println(vo);
 		
-		
-		model.addAttribute("read", service.read(bno));
+		model.addAttribute("read", service.read(bno,cate));
+		return "/board/read";
 	}
 	
 	@GetMapping("update")
-	public void update(int bno, Model model) {
-		System.out.println("이거야!"+service.read(bno));
-		model.addAttribute("update", service.read(bno));
+	public void update(int bno, Model model,int cate) {
+		System.out.println("이거야!"+service.read(bno,cate));
+		model.addAttribute("update", service.read(bno,cate));
 	}
 	@PostMapping("update")
 	public String modifyPostNo(BoardVO vo,RedirectAttributes rttr, Model model) {
@@ -109,7 +125,7 @@ public class BoardController {
 		System.out.println(service.update(vo));
 		model.addAttribute("update", service.update(vo));
 		rttr.addAttribute("bno", vo.getBno());
-		log.info(vo);
+		rttr.addAttribute("cate", vo.getCate());
 		return "redirect:/board/read";
 	}
 	@GetMapping("delete")
@@ -121,7 +137,6 @@ public class BoardController {
 		
 		return "redirect:/board/list";
 	}
-
 	//CRUD
 //================================================================
 	//Upload
@@ -147,18 +162,18 @@ public class BoardController {
 
 		attachList.forEach(attach -> {
 			try {
-				Path file = Paths.get("C:\\kym\\eclipse\\workspace\\modify\\src\\main\\webapp\\resources"+attach.getUploadpath()+"\\"+
-			attach.getUuid()+"\\"+"_"+attach.getFilename());
+				Path file = Paths.get("C:\\Upload\\"+attach.getUploadpath()+"\\"+
+			attach.getUuid()+"_"+attach.getFilename());
 				Files.deleteIfExists(file);
 				
 				
 				if(Files.probeContentType(file).startsWith("image")) {
-					Path thumbNail = Paths.get("C:\\kym\\eclipse\\workspace\\modify\\src\\main\\webapp\\resources"+attach.getUploadpath()+"\\"+
-			attach.getUuid()+"\\"+"_"+attach.getFilename());
+					Path thumbNail = Paths.get("C:\\Upload\\"+attach.getUploadpath()+"\\"+
+			attach.getUuid()+"_"+attach.getFilename());
 					
 					Files.delete(thumbNail);}
 			} catch(Exception e) {
-				log.error("delete"+e.getMessage());
+				log.error("delete "+e.getMessage());
 			}
 
 	});

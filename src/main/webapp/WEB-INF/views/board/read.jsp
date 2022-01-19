@@ -9,6 +9,9 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <meta name="_csrf_parameter" content="${_csrf.parameterName}" />
+		<meta name="_csrf_header" content="${_csrf.headerName}" />
+		<meta name="_csrf" content="${_csrf.token}" />
 		<link rel="icon" href="data:;base64,iVBORw0KGgo=">
         <link rel="stylesheet" href="/resources/css/common.css" />
         <link rel="stylesheet" href="/resources/css/approval.css" />
@@ -37,7 +40,9 @@
 	                <div  style="position:relative;">
 	                    <p>
 	                       <strong><span><sec:authentication property="principal.member.userName"/>&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
-	                       <em class="cateInfo" style="cursor:pointer;">3등급</em>
+	                  <em class="cateInfo" style="cursor:pointer;">
+	                    		<sec:authentication property="principal.member.cate"/> 등급
+	                        </em>
 	                    </p>
 	                    <div style="position:absolute;top:-2px;right:44px;">
 		                    <form action="/logout" method="post">
@@ -49,13 +54,15 @@
                 </div>
                  <div class="search" style="position: absolute;top: 39px;right: 137px;">
 	                   <div>
-	                       <form id="allSearchForm" action="/board/list" method="get">
-	                           <select style="display:none;" name="allType">
-	                               <option value="TC" <c:out value="${pageMaker.cri.allType=='TC'?'selected':''}" />>제목+내용</option>
-	                           </select>
-	                           <input type="text" name="allKeyword" value="${pageMaker.cri.allKeyword}" style="width: 200px;border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
-	                           <button class="btn">검&nbsp;색</button>		
-	                       </form>
+	                       <form id="allSearchForm" action="/board/searchAll" method="get">
+	                            <select style="display:none;"  name="allType">
+	                                <option value="TC" <c:out value="${pageMaker.cri.allType=='TC'?'selected':''}" />>제목+내용</option>
+	                            </select>
+	                            <input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}">
+	                            <input type="hidden" name="amount" value="${pageMaker.cri.amount}">
+	                            <input type="text" name="allKeyword" value="${pageMaker.cri.allKeyword}" style="width: 200px;border: 1px solid #4a4a4a;outline:none;" placeholder="통합검색">
+	                            <button class="btn">검&nbsp;색</button>		
+	                        </form>
 	                   </div> 
 	               </div> 
             </header>
@@ -97,10 +104,20 @@
           <div class="containers">
            	<div>
             	<div style="margin-bottom: 30px;">
-	            	<h2 style="margin-bottom: 30px;">1등급 게시판</h2>
+	            	<h2 style="margin-bottom: 30px;">
+	            		<c:choose>
+	                   		<c:when test="${read.cate=='0'}">
+	                   			<c:out value="공지사항" />
+	                   		</c:when>
+	                       	<c:otherwise>
+	                       		 <c:out value="${read.cate}등급 게시판" />
+	                        </c:otherwise>	
+	                    </c:choose>
+	            	</h2>
 	            	 <table>
 	            	 	<tr style="display:none;"><input type="hidden" name="bno" id="bno"  value='${read.bno}' ></tr>
-	            	 	<tr><th style="width: 100px;">작성자</th><td style="width: 70%;">${read.writer}</td><th>작성일</th><td><fmt:formatDate value="${read.date}" pattern="yyyy년MM월dd일"/></td></tr>
+	            	 	<tr style="display:none;"><input type="hidden" name="cate" id="cate"  value='${read.cate}' ></tr>
+	            	 	<tr><th style="width: 100px;">작성자</th><td id="writer" style="width: 70%;">${read.writer}</td><th>작성일</th><td><fmt:formatDate value="${read.date}" pattern="yyyy년MM월dd일"/></td></tr>
 	            	 	<tr><th style="width: 100px;">카테고리</th><td style="width: 70%;">
             	 			<c:choose>
 	                    		<c:when test="${read.cate=='0'}">
@@ -122,14 +139,16 @@
                     	<ul class="utils__list">
                     	 <sec:authentication property="principal" var="pinfo"/>
 					        <sec:authorize access="isAuthenticated()">
-					         <c:if test="${pinfo.member.userName eq read.writer}">
-	                        	<li><a class="modify" style="color: #333;right: 90px;top: 15px;position: absolute;" href="/board/update?bno=${read.bno}">수정</a></li>
+					         <c:if test="${pinfo.member.userName eq read.writer || pinfo.username eq 'admin'}">
+	                        	<li><a class="modify" style="color: #333;right: 90px;top: 15px;position: absolute;" href="/board/update?bno=${read.bno}&&cate=${read.cate}">수정</a></li>
 	                            <li><a class="remove" style="color: #333;right: 35px;top: 15px;position: absolute;" href="/board/delete?bno=${read.bno}">삭제</a></li>
 					          </c:if>
 					       </sec:authorize>
 						</ul>
                      </div>
            	 		<div class="board_reply">
+           	 			<input id="who" type='hidden' value='<sec:authentication property="principal.member.userName"/>' style="outline:none;">
+           	 			<input id="whoId" type='hidden' value='<sec:authentication property="principal.username"/>' style="outline:none;">
            	 			<div style="margin: 9px 0;padding-bottom: 13px;border-bottom: 1px solid #767171;">댓글 <span>${read.replyCnt}</span></div>
                     	<div class="reply_write">
 	                        <input type="text" id="reply" style="outline:none;" placeholder="댓글을 입력해 주세요.">
@@ -137,11 +156,6 @@
 	                     </div>
 						 <ul class="chat">
 						 </ul>
-<!-- 						 <div class="reply-footer" style="order: 2; padding-top:20px;"> -->
-<!-- 						 	<ul> -->
-<!-- 						 	</ul> -->
-<!-- 						 	<button>click</button> -->
-<!-- 						</div> -->
 	                 </div>
                 </div>
             </div>

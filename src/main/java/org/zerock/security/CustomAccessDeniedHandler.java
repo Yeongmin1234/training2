@@ -24,7 +24,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         log.error("Redircet.......");
         
         //접근 제한에 걸리는 경우 리다이렉트하는방식 
-        response.sendRedirect("/");
+        response.sendRedirect("/accessError");
     }
  
 }
+ 

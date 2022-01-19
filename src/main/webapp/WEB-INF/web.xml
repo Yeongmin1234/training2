@@ -43,19 +43,27 @@
       <url-pattern>/</url-pattern>
    </servlet-mapping>
    
+   
+   
+   
+   
+   
    <filter>
-      <filter-name>encoding</filter-name>
-      <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-      
-      <init-param>
-         <param-name>encoding</param-name>
-         <param-value>UTF-8</param-value>
-      </init-param>
-   </filter>
-   <filter-mapping>
-      <filter-name>encoding</filter-name>
-      <servlet-name>appServlet</servlet-name>
-   </filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+   
+   
+   
+   
    
    
     <filter>
@@ -69,20 +77,31 @@
     </filter-mapping>
     
     
-    <filter>
+<!--      <filter> -->
 
+<!--                <filter-name>LoginChecker</filter-name> -->
+
+<!--                <filter-class>filter.login.LoginCheckFilter</filter-class> -->
+
+<!--      </filter> -->
+
+
+
+<!--      <filter-mapping> -->
+<!--                <filter-name>LoginChecker</filter-name> -->
+<!--                <url-pattern>/Filter/login/*</url-pattern> -->
+<!--                <dispatcher>REQUEST</dispatcher> -->
+<!--                <dispatcher>FORWARD</dispatcher> -->
+<!--      </filter-mapping> -->
+
+
+    <filter>
 	    <filter-name>httpHeaderSecurity</filter-name>
-	
 	    <filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>
-	
 	    <init-param>
-	
 	        <param-name>antiClickJackingOption</param-name>
-	
 	        <param-value>SAMEORIGIN</param-value>
-	
 	    </init-param>
-	
 	</filter>
 
 

@@ -11,8 +11,8 @@
 		select * from reply where rno = #{rno}
 	</select>
 	<insert id="insert">
-		insert into reply (bno, reply,reparent,redepth)	
-		values(#{bno}, #{reply}, #{reparent},#{redepth})
+		insert into reply (bno, reply,replyer,reparent,redepth)	
+		values(#{bno}, #{reply}, #{replyer}, #{reparent},#{redepth})
 	</insert>
 	<delete id="delete">
 		delete from reply where rno = #{rno}

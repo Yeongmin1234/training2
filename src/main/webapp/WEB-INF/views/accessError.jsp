@@ -8,10 +8,10 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<body>
- 
-<h1>access denied page</h1>
-<h2><c:out value="${SPRING_SECURITY_403_EXCEPTION.getMessage()}"></c:out></h2>
-<h2><c:out value="${msg}"></c:out></h2>
+<body style="height:100vh">
+	<div style="position:relative;top:50%;margin-top: -130px;text-align: center;">
+		<h1>Error Page</h1>
+		<h2><c:out value="${msg}"></c:out></h2>
+	</div>
 </body>
 </html>

@@ -58,10 +58,6 @@ public class UploadController {
 		return false;
 	}
 
-	
-	
-	
-	
 	@PostMapping(value = "/uploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public String uploadAjaxPost(@RequestParam("files[]") List<MultipartFile> files) throws IOException, ServletException {
@@ -137,191 +133,35 @@ public class UploadController {
 			tFileBox.put("files", tfileArr);
 		} // end for
 		
-
-//		t.put("fileName", "aaa.jpg");
-//		t.put("uploadPath", "\\\\img");
-//		t.put("uuid", "a117932f-a94d-4138-86c5-bf0b9e796510");
-//		t.put("image", "true");
-	
 		System.out.println(tFileBox);
 	
-
 		return tFileBox.toString();
 	}
 
-	
-	
-	@PostMapping(value = "/uploadAjaxActions", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
-	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPostt(MultipartFile[] tuploadFile) {
-		List<AttachFileDTO> list = new ArrayList<>();
-		String uploadFolder = "C:\\kym\\eclipse\\workspace\\training\\src\\main\\webapp\\resources";
-		String uploadFolderPaths = "\\thumb";
-							
-		File uploadPaths = new File(uploadFolder, uploadFolderPaths);
-for (MultipartFile multipartFile : tuploadFile) {
-			
-			AttachFileDTO attachDTO = new AttachFileDTO();
-			
-			String uploadFileName = multipartFile.getOriginalFilename();
-
-			uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
-			
-			
-			attachDTO.setFileName(uploadFileName);
-
-			UUID uuid = UUID.randomUUID();
-			
-			uploadFileName = uuid.toString() + "_" + uploadFileName;
-
-			try {
-					attachDTO.setUuid(uuid.toString());
-					
-					attachDTO.setImage(true);
-					
-					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPaths, "s_" + uploadFileName));
-					
-					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 200, 200);
-					
-					thumbnail.close();
-					
-				list.add(attachDTO);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		} // end for
-		return new ResponseEntity<>(list, HttpStatus.OK);
-	}
-	
-	
-	@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	@ResponseBody			
-	public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) throws UnsupportedEncodingException {
-		
-		Resource resource = new FileSystemResource("C:\\kym\\eclipse\\workspace\\training\\src\\main\\webapp\\resources\\" + fileName);
-
-		if (resource.exists() == false) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
-		}
-		String resourceName = resource.getFilename();
-
-		String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
-		
-		HttpHeaders headers = new HttpHeaders();
-		try {
-
-			boolean checkIE = (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1);
-			
-			String downloadName = null;
-
-			if (checkIE) { 
-				downloadName = URLEncoder.encode(resourceOriginalName, "UTF8").replaceAll("\\+", " ");
-			} else {
-				downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
-			}
-
-			headers.add("Content-Disposition", "attachment; filename=" + downloadName);
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-	}
-
-	@PostMapping("/deleteFile")
-	@ResponseBody
-	public ResponseEntity<String> deleteFile(String fileName, String type) {
-
-		File file;
-
-		try {
-			file = new File("C:\\kym\\eclipse\\workspace\\training\\src\\main\\webapp\\resources" + URLDecoder.decode(fileName, "UTF-8"));
-			log.info("00000 " +  URLDecoder.decode(fileName, "UTF-8"));
-			file.delete();
-
-	
-			if (type.equals("image")) {
-
-//				String largeFileName = file.getAbsolutePath().replace("s_", "");
-				String largeFileName = file.getAbsolutePath().replace("%2Fresources%2Fimg%2", "\\img\\");
-
-
-				file = new File(largeFileName);
-				System.out.println(file);
-				file.delete();
-			}
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-
-		return new ResponseEntity<String>("deleted", HttpStatus.OK);
-
-	}
-	
-	@PostMapping("/tdeleteFile")
-	@ResponseBody
-	public ResponseEntity<String> tdeleteFile(String fileName, String type) {
-
-		log.info("deleteFile: " + fileName);
-		log.info("deleteFile type: " + type);
-
-		File file;
-
-		try {
-			file = new File("C:\\kym\\eclipse\\workspace\\training\\src\\main\\webapp\\resources" + URLDecoder.decode(fileName, "UTF-8"));
-			log.info("00000 " +  URLDecoder.decode(fileName, "UTF-8"));
-			file.delete();
-
-	
-			if (type.equals("image")) {
-
-				String largeFileName = file.getAbsolutePath().replace("s_", "");
-
-				log.info("largeFileName: " + largeFileName);
-
-				file = new File(largeFileName);
-
-				file.delete();
-			}
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-
-		return new ResponseEntity<String>("deleted", HttpStatus.OK);
-
-	}
 	
 	//img
 //================================================================================================================================================================================================
     //file
 	
 	@PostMapping("/fileUploadFormAction")
-	public void fileUploadFormAction(MultipartFile[] uploadFile, Model model) {
+	public void fileUploadFormAction(MultipartFile uploadFile, Model model) {
 							//두개 이상을 선택하기 위해 배열에다가 저장
 		String uploadFolder = "C:\\upload";
 						//어디다가 파일 업로드 할껀지의 경로
-		for (MultipartFile multipartFile : uploadFile) {
 
 			log.info("-------------------------------------");
-			log.info("Upload File Name: " + multipartFile.getOriginalFilename());
-			log.info("Upload File Size: " + multipartFile.getSize());
+			log.info("Upload File Name: " + uploadFile.getOriginalFilename());
+			log.info("Upload File Size: " + uploadFile.getSize());
 
-			File saveFile = new File(uploadFolder, multipartFile.getOriginalFilename());
+			File saveFile = new File(uploadFolder, uploadFile.getOriginalFilename());
 			//C:\\upload에 실제파일명 문자열을 saveFile변수에 저장
 			log.info("saveFile : "+saveFile);
 			try { 
-				multipartFile.transferTo(saveFile);
+				uploadFile.transferTo(saveFile);
 							//transferTo(파일명) : 파일명으로 저장
 			} catch (Exception e) {
 				log.error(e.getMessage());
 			}  //end catch
-		}  //end for
 
 	}
 	
@@ -356,8 +196,8 @@ for (MultipartFile multipartFile : tuploadFile) {
 
 	@PostMapping(value = "/fileUploadAjaxAction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<AttachFileDTO>> fileUploadAjaxPost(MultipartFile[] uploadFile) {
-		log.info("uploadFile : " +uploadFile[0].getOriginalFilename());
+	public ResponseEntity<List<AttachFileDTO>> fileUploadAjaxPost(MultipartFile uploadFile) {
+//		log.info("uploadFile : " +uploadFile[0].getOriginalFilename());
 		List<AttachFileDTO> list = new ArrayList<>();
 		String uploadFolder = "C:\\upload\\";
 		String uploadFolderPath = fileGetFolder(); 	 
@@ -370,9 +210,8 @@ for (MultipartFile multipartFile : tuploadFile) {
 		}
 		
 		
-		for (MultipartFile multipartFile : uploadFile) {
 			AttachFileDTO attachDTO = new AttachFileDTO();
-			String uploadFileName = multipartFile.getOriginalFilename();
+			String uploadFileName = uploadFile.getOriginalFilename();
 			uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
 			log.info("only file name: " + uploadFileName);
 			attachDTO.setFileName(uploadFileName);
@@ -385,13 +224,13 @@ for (MultipartFile multipartFile : tuploadFile) {
 			try {
 				File saveFile = new File(uploadPath, uploadFileName);
 
-				multipartFile.transferTo(saveFile);
+				uploadFile.transferTo(saveFile);
 				
 				attachDTO.setUuid(uuid.toString());
 
 				attachDTO.setUploadPath(uploadFolderPath);
 
-				if (fileCheckImageType(saveFile) && multipartFile.getSize()<=10240000) {
+				if (fileCheckImageType(saveFile) && uploadFile.getSize()<=10240000) {
 					attachDTO.setImage(true);
 				} 
 				list.add(attachDTO);
@@ -399,7 +238,6 @@ for (MultipartFile multipartFile : tuploadFile) {
 				e.printStackTrace();
 			}
 
-		}  
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 

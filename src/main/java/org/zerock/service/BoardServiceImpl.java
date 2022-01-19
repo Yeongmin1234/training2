@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
+import org.zerock.domain.MemberVO;
 import org.zerock.domain.BoardAttachVO;
 import org.zerock.mapper.BoardMapper;
+import org.zerock.mapper.MemberMapper;
 import org.zerock.mapper.ReplyMapper;
+import org.zerock.security.CustomUserDetailService;
 import org.zerock.mapper.BoardAttachMapper;
 
 import lombok.AllArgsConstructor;
@@ -23,9 +26,16 @@ public class BoardServiceImpl implements BoardService {
 	public BoardMapper mapper;
 	private BoardAttachMapper attachMapper;
 	private ReplyMapper replyMapper;
-
+	private MemberMapper memberMapper;
+	private CustomUserDetailService service;
+	@Override
+	public List<BoardVO> searchAll(Criteria cri) {
+		return mapper.searchAll(cri);
+		
+	}
 	@Override
 	public List<BoardVO> list(Criteria cri) {
+		System.out.println(mapper.boardCnt("±è¿µ¹Î"));
 		return mapper.list(cri);
 	}
 	@Override
@@ -68,9 +78,9 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Override
 	@Transactional
-	public BoardVO read(int bno) {
+	public BoardVO read(int bno,int cate) {
 		mapper.updateHit(bno);
-		return mapper.read(bno);
+		return mapper.read(bno,cate);
 	}
 
 	@Override

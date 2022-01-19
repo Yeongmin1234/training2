@@ -8,12 +8,13 @@ import lombok.Data;
 
 @Data
 public class BoardVO {
-	private int rownum;	   //pk
-	private int bno;	   //pk
-	private String title;  //제목
-	private	String text;   //내용
-	private String writer; //작성자
-	private Date date;	   //작성일자
+	private int rownum;	   
+	private int bno;	   
+	private String title;  
+	private	String text;   
+	private String writer; 
+	private Date date;	   
+	private Date updateDate;	   
 	private int replyCnt;
 	private int hit;
 	private int cate;

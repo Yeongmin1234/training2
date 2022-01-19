@@ -11,9 +11,15 @@ public class MemberVO {
     private String userid;
     private String userpw;
     private String userName;
+    private String dept;
+    private String phone;
     private boolean enabled;
-    
     private Date regDate;
     private Date updateDate;
+    private int cate;
+    private int boardCnt;
+    private int replyCnt;
+    private int hitCnt;
+    
     private List<AuthVO> authList; //여러개의 사용자 권한
 }

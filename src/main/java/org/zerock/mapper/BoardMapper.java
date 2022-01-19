@@ -9,6 +9,7 @@ import org.zerock.domain.Criteria;
 
 
 public interface BoardMapper {
+	public List<BoardVO> searchAll(Criteria cri);
 	public List<BoardVO> list(Criteria cri);
 	public List<BoardVO> pinList(Criteria cri);
 	public List<BoardVO> eachList(Criteria cri);
@@ -16,9 +17,10 @@ public interface BoardMapper {
 	public int totalCount(Criteria cri);
 	public int etotalCount(Criteria cri);
 	public void create(BoardVO vo);
-	public BoardVO read(int bno);
+	public BoardVO read(@Param("bno") int bno,@Param("cate") int cate);
 	public int update(BoardVO vo);
 	public int delete(int bno);
 	public void updateHit(int bno);
 	public void updateReplyCnt(@Param("bno") int bno, @Param("amount") int amount);
+	public int boardCnt(String writer);
 }

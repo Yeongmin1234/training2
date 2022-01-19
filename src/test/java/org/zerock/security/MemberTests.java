@@ -28,58 +28,12 @@ public class MemberTests {
   @Setter(onMethod_ = @Autowired)
   private DataSource ds;
   
-//  @Test
-//  public void testInsertMember() {
-// 
-//    String sql = "insert into tbl_member(userid, userpw, username) values (?,?,?)";
-//    
-//    for(int i = 0; i < 100; i++) {
-//      
-//      Connection con = null;
-//      PreparedStatement pstmt = null;
-//      
-//      try {
-//        con = ds.getConnection();
-//        pstmt = con.prepareStatement(sql);
-//       //비밀번호는 암호화로 등록. pw(i) 가비밀번호가됨
-//        pstmt.setString(2, pwencoder.encode("pw" + i));
-//        
-//        if(i <80) {
-//          
-//          pstmt.setString(1, "user"+i);
-//          pstmt.setString(3,"일반사용자"+i);
-//          
-//        }else if (i <90) {
-//          
-//          pstmt.setString(1, "manager"+i);
-//          pstmt.setString(3,"운영자"+i);
-//          
-//        }else {
-//          
-//          pstmt.setString(1, "admin"+i);
-//          pstmt.setString(3,"관리자"+i);
-//          
-//        }
-//        
-//        pstmt.executeUpdate();
-//        
-//      }catch(Exception e) {
-//        e.printStackTrace();
-//      }finally {
-//        if(pstmt != null) { try { pstmt.close();  } catch(Exception e) {} }
-//        if(con != null) { try { con.close();  } catch(Exception e) {} }
-//        
-//      }
-//    }//end for
-//  }
-  
   @Test
-  public void testInsertAuth() {
+  public void testInsertMember() {
+	   
+    String sql = "insert into board (title,text,writer,cate,pin,file) values(?,?,?,?,?,?)";
     
-    
-    String sql = "insert into tbl_member_auth (userid, auth) values (?,?)";
-    
-    for(int i = 0; i < 100; i++) {
+    for(int i = 11; i < 21; i++) {
       
       Connection con = null;
       PreparedStatement pstmt = null;
@@ -87,26 +41,16 @@ public class MemberTests {
       try {
         con = ds.getConnection();
         pstmt = con.prepareStatement(sql);
-      
+          
+          pstmt.setString(1, "테스트"+i);
+          pstmt.setString(2,"테스트입니다"+i);
+          pstmt.setString(3, "김영민");
+          pstmt.setString(4, "3");
+          pstmt.setString(5, "0");
+          pstmt.setString(6, "0");
+
         
-        if(i <80) {
-          
-          pstmt.setString(1, "user"+i);
-          pstmt.setString(2,"ROLE_USER");
-          
-        }else if (i <90) {
-          
-          pstmt.setString(1, "manager"+i);
-          pstmt.setString(2,"ROLE_MEMBER");
-          
-        }else {
-          
-          pstmt.setString(1, "admin"+i);
-          pstmt.setString(2,"ROLE_ADMIN");
-          
-        }
-        
-        pstmt.executeUpdate();
+          pstmt.executeUpdate();
         
       }catch(Exception e) {
         e.printStackTrace();
@@ -117,6 +61,4 @@ public class MemberTests {
       }
     }//end for
   }
- 
-  
 }
