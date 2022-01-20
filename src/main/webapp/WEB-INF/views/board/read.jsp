@@ -140,8 +140,8 @@
                     	 <sec:authentication property="principal" var="pinfo"/>
 					        <sec:authorize access="isAuthenticated()">
 					         <c:if test="${pinfo.member.userName eq read.writer || pinfo.username eq 'admin'}">
-	                        	<li><a class="modify" style="color: #333;right: 90px;top: 15px;position: absolute;" href="/board/update?bno=${read.bno}&&cate=${read.cate}">수정</a></li>
-	                            <li><a class="remove" style="color: #333;right: 35px;top: 15px;position: absolute;" href="/board/delete?bno=${read.bno}">삭제</a></li>
+	                        	<li><a class="modify" style="color: #333;right: 90px;top: 15px;position: absolute;" href="/board/update/${read.cate}?bno=${read.bno}">수정</a></li>
+	                            <li><a class="remove" style="color: #333;right: 35px;top: 15px;position: absolute;" href="/board/delete/${read.cate}?bno=${read.bno}">삭제</a></li>
 					          </c:if>
 					       </sec:authorize>
 						</ul>

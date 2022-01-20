@@ -1,187 +1,188 @@
-@import "_reset.scss";
-@import "_popUp1.scss";
-@import "_popUp2.scss";
-@import "_popUp3.scss";
+/* @charset "UTF-8"; */
+/* @import "_reset.scss"; */
+/* @import "_popUp1.scss"; */
+/* @import "_popUp2.scss"; */
+/* @import "_popUp3.scss"; */
 
-@font-face {
-    font-family: NanumSquareL;
-    font-weight: 100;
-    src: url("../../font/NanumSquareL.woff");
-}
+/* @font-face { */
+/*     font-family: NanumSquareL; */
+/*     font-weight: 100; */
+/*     src: url("../../font/NanumSquareL.woff"); */
+/* } */
 
-@font-face {
-    font-family: NanumSquareR;
-    font-weight: 400;
-    src: url("../../font/NanumSquareR.woff");
-}
+/* @font-face { */
+/*     font-family: NanumSquareR; */
+/*     font-weight: 400; */
+/*     src: url("../../font/NanumSquareR.woff"); */
+/* } */
 
-@font-face {
-    font-family: NanumSquareB;
-    font-weight: 700;
-    src: url("../../font/NanumSquareB.woff");
-}
+/* @font-face { */
+/*     font-family: NanumSquareB; */
+/*     font-weight: 700; */
+/*     src: url("../../font/NanumSquareB.woff"); */
+/* } */
 
-@font-face {
-    font-family: NanumSquareEB;
-    font-weight: 900;
-    src: url("../../font/NanumSquareEB.woff");
-}
+/* @font-face { */
+/*     font-family: NanumSquareEB; */
+/*     font-weight: 900; */
+/*     src: url("../../font/NanumSquareEB.woff"); */
+/* } */
 
-.font-l {
-    font-family: NanumSquareL;
-}
+/* .font-l { */
+/*     font-family: NanumSquareL; */
+/* } */
 
-.font-r {
-    font-family: NanumSquareR;
-}
+/* .font-r { */
+/*     font-family: NanumSquareR; */
+/* } */
 
-.font-b {
-    font-family: NanumSquareB;
-}
+/* .font-b { */
+/*     font-family: NanumSquareB; */
+/* } */
 
-.font-eb {
-    font-family: NanumSquareEB;
-}
+/* .font-eb { */
+/*     font-family: NanumSquareEB; */
+/* } */
 
-@mixin max {
-    width: 100%;
-    height: 100%;
-}
+/* @mixin max { */
+/*     width: 100%; */
+/*     height: 100%; */
+/* } */
 
-@mixin center {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
+/* @mixin center { */
+/*     position: absolute; */
+/*     left: 50%; */
+/*     top: 50%; */
+/*     transform: translate(-50%, -50%); */
+/* } */
 
-@mixin font {
-    color: rgba(255, 255, 255, 0.75);
-    font-weight: 500;
-}
+/* @mixin font { */
+/*     color: rgba(255, 255, 255, 0.75); */
+/*     font-weight: 500; */
+/* } */
 
-@mixin font_on {
-    color: rgba(255, 255, 255, 1);
-    font-weight: 700;
-}
+/* @mixin font_on { */
+/*     color: rgba(255, 255, 255, 1); */
+/*     font-weight: 700; */
+/* } */
 
-body {
-    font-family: NanumSquareL, NanumSquareR, NanumSquareB, NanumSquareEB;
-    background: url("../../img/background_00.png") no-repeat;
-    background-size: cover;
-}
+/* body { */
+/*     font-family: NanumSquareL, NanumSquareR, NanumSquareB, NanumSquareEB; */
+/*     background: url("../../img/background_00.png") no-repeat; */
+/*     background-size: cover; */
+/* } */
 
-input[type="password"] {
-    &::placeholder {
-        font-family: NanumSquareL, NanumSquareR, NanumSquareB, NanumSquareEB;
-    }
-    font-family: "Arial", "Helvetica", "sans-serif";
-}
+/* input[type="password"] { */
+/*     &::placeholder { */
+/*         font-family: NanumSquareL, NanumSquareR, NanumSquareB, NanumSquareEB; */
+/*     } */
+/*     font-family: "Arial", "Helvetica", "sans-serif"; */
+/* } */
 
-.wrap {
-    @include max;
-}
+/* .wrap { */
+/*     @include max; */
+/* } */
 
-.loginBox {
-    width: 333px;
-    height: 450px;
-    @include center;
-}
+/* .loginBox { */
+/*     width: 333px; */
+/*     height: 450px; */
+/*     @include center; */
+/* } */
 
-.logo {
-    width: 142px;
-    margin: 0 auto 45px;
-    a {
-        display: block;
-        width: 100%;
-    }
-}
+/* .logo { */
+/*     width: 142px; */
+/*     margin: 0 auto 45px; */
+/*     a { */
+/*         display: block; */
+/*         width: 100%; */
+/*     } */
+/* } */
 
-form {
-    width: 100%;
-    fieldset {
-        width: 100%;
-        legend {
-            display: none;
-        }
-        p {
-            width: 100%;
-            margin-top: 15px;
-        }
-    }
-}
+/* form { */
+/*     width: 100%; */
+/*     fieldset { */
+/*         width: 100%; */
+/*         legend { */
+/*             display: none; */
+/*         } */
+/*         p { */
+/*             width: 100%; */
+/*             margin-top: 15px; */
+/*         } */
+/*     } */
+/* } */
 
-.p_0 {
-    input {
-        width: 100%;
-        height: 56px;
-        margin-top: 0;
-        @include font;
-        background-color: rgba(255, 255, 255, 0.2);
-        text-indent: 16px;
-        &:nth-child(2) {
-            margin-top: 15px;
-        }
-        &::placeholder {
-            @include font;
-        }
-    }
-}
+/* .p_0 { */
+/*     input { */
+/*         width: 100%; */
+/*         height: 56px; */
+/*         margin-top: 0; */
+/*         @include font; */
+/*         background-color: rgba(255, 255, 255, 0.2); */
+/*         text-indent: 16px; */
+/*         &:nth-child(2) { */
+/*             margin-top: 15px; */
+/*         } */
+/*         &::placeholder { */
+/*             @include font; */
+/*         } */
+/*     } */
+/* } */
 
-.p_1 {
-    height: 56px;
-    button {
-        @include max;
-        background: url("../../img/button.png") no-repeat -257px 0;
-    }
-}
+/* .p_1 { */
+/*     height: 56px; */
+/*     button { */
+/*         @include max; */
+/*         background: url("../../img/button.png") no-repeat -257px 0; */
+/*     } */
+/* } */
 
-.p_2 {
-    i {
-        float: left;
-        padding: 0 10px;
-        @include font;
-    }
-    a {
-        display: inline-block;
-        float: left;
-        vertical-align: middle;
-        @include font;
-        &:hover,
-        &:focus {
-            @include font_on;
-        }
-    }
-    input {
-        display: none;
-        &:checked ~ label {
-            @include font_on;
-            &:before {
-                background-position: bottom;
-            }
-        }
-    }
-    label {
-        display: inline-block;
-        float: right;
-        cursor: pointer;
-        @include font;
-        &:before {
-            content: "";
-            display: inline-block;
-            width: 19px;
-            height: 19px;
-            margin-right: 10px;
-            vertical-align: middle;
-            background: url("../../img/toggle_00.png") no-repeat left top;
-        }
-    }
-}
+/* .p_2 { */
+/*     i { */
+/*         float: left; */
+/*         padding: 0 10px; */
+/*         @include font; */
+/*     } */
+/*     a { */
+/*         display: inline-block; */
+/*         float: left; */
+/*         vertical-align: middle; */
+/*         @include font; */
+/*         &:hover, */
+/*         &:focus { */
+/*             @include font_on; */
+/*         } */
+/*     } */
+/*     input { */
+/*         display: none; */
+/*         &:checked ~ label { */
+/*             @include font_on; */
+/*             &:before { */
+/*                 background-position: bottom; */
+/*             } */
+/*         } */
+/*     } */
+/*     label { */
+/*         display: inline-block; */
+/*         float: right; */
+/*         cursor: pointer; */
+/*         @include font; */
+/*         &:before { */
+/*             content: ""; */
+/*             display: inline-block; */
+/*             width: 19px; */
+/*             height: 19px; */
+/*             margin-right: 10px; */
+/*             vertical-align: middle; */
+/*             background: url("../../img/toggle_00.png") no-repeat left top; */
+/*         } */
+/*     } */
+/* } */
 
-.footer {
-    position: absolute;
-    left: 50%;
-    top: 95%;
-    transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.45);
-}
+/* .footer { */
+/*     position: absolute; */
+/*     left: 50%; */
+/*     top: 95%; */
+/*     transform: translateX(-50%); */
+/*     color: rgba(255, 255, 255, 0.45); */
+/* } */

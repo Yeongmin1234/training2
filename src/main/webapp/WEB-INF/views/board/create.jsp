@@ -47,7 +47,7 @@
                 <div class="box">
                 <div  style="position:relative;">
                     <p>
-                       <strong><span><sec:authentication property="principal.member.userName"/>&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
+                       <strong><span id=""><sec:authentication property="principal.member.userName"/>&nbsp</span></strong><span>님&nbsp&nbsp&nbsp&nbsp</span>
                         <em class="cateInfo" style="cursor:pointer;">
                     		<sec:authentication property="principal.member.cate"/> 등급
                         </em>
@@ -118,6 +118,7 @@
 		            	 <table>
 		            	 	<tr><th class="private" style="width: 10%;display:none;">카테고리</th><th class="public" style="width: 3%;">카테고리</th>
 		            	 				<td class="private"  colspan='3' style="display:none;">
+						            	 	<input type="hidden" id="userid" value='<sec:authentication property="principal.username"/>' style="outline:none;" readonly="readonly">
 						            	 	<input type="hidden" name="writer" value='<sec:authentication property="principal.member.userName"/>' style="outline:none;" readonly="readonly">
 			            	 				<select id="cate" style="width: 90px;">					
 										       <option value="0">공지</option>
@@ -616,7 +617,7 @@
 			<p>* 2등급 : 3등급 게시판 조회 불가</p>
 		</div>
         <script>
-        if($("input[name='writer']").val()=="관리자"){
+        if($("#userid").val()=="admin"){
         	$(".private").css('display','');
         	$(".public").css('display','none');
         $("#button").click(function(e){

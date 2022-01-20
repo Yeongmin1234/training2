@@ -22,5 +22,5 @@ public interface BoardService {
 	public BoardVO read(@Param("bno") int bno,@Param("cate") int cate);
 	public int update(BoardVO vo);
 	public int delete(int bno);
-	public List<BoardAttachVO> getAttachList(int bno);
+	public List<BoardAttachVO> getAttachList(@Param("bno") int bno,@Param("cate") int cate);
 }

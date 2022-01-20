@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -28,7 +29,7 @@ import lombok.extern.log4j.Log4j;
  */
 @Log4j
 @Controller
-@CrossOrigin(origins = "localhost:8080", allowedHeaders = {"POST", "GET", "PATCH"})
+@CrossOrigin(origins = "*")
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -60,5 +61,10 @@ public class HomeController {
 		else { 
 			return "redirect:/board/list";
 		}
+	}
+	@GetMapping("/ErrorPage")
+	public void acessDenied(Authentication auth,Model model) {
+		log.info("access Denied : "+ auth);
+		model.addAttribute("msg","등급이 맞지않아 접근이 제한됩니다");
 	}
 }

@@ -3,9 +3,10 @@
  */
 $(document).ready(function(){
 	var bno=$("#bno").val();
+	var cate=$("#cate").val();
 	console.log(bno)
 	//alert(bno)
-	$.getJSON("fileGetAttachList",{bno:bno},function(arr){
+	$.getJSON(cate+"/fileGetAttachList",{bno:bno},function(arr){
 		console.log(arr)
 		if(arr.length==0){console.log("aaa");$(".uploadResult").parent().parent().css('display','none');}
 		var str="";

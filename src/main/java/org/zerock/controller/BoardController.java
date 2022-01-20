@@ -77,12 +77,10 @@ public class BoardController {
 		model.addAttribute("pageMaker", new PageDTO(cri,total));
 	}
 	
-	@PreAuthorize("isAuthenticated()")
 	@GetMapping("create")
 	public void create() {
 	}
 	
-	@PreAuthorize("isAuthenticated()")
 	@PostMapping("create")
 	public String create(BoardVO vo, RedirectAttributes rttr, Model model) {
 		
@@ -97,7 +95,7 @@ public class BoardController {
 		service.create(vo);
 		rttr.addAttribute("bno", vo.getBno());
 		rttr.addAttribute("cate", vo.getCate());
-		return "redirect:/board/read";
+		return "redirect:/board/read/{cate}";
 	}
 	@GetMapping("read/{cate}")
 	public String read(int bno, Model model,BoardVO vo,@PathVariable int cate) {
@@ -109,13 +107,14 @@ public class BoardController {
 		return "/board/read";
 	}
 	
-	@GetMapping("update")
-	public void update(int bno, Model model,int cate) {
+	@GetMapping("/update/{cate}")
+	public String update(int bno, Model model,@PathVariable int cate) {
 		System.out.println("¿Ã∞≈æﬂ!"+service.read(bno,cate));
 		model.addAttribute("update", service.read(bno,cate));
+		return "/board/update";
 	}
 	@PostMapping("update")
-	public String modifyPostNo(BoardVO vo,RedirectAttributes rttr, Model model) {
+	public String modifyPostNo(BoardVO vo,RedirectAttributes rttr, Model model,int cate) {
 		if(vo.getTitle().length()==0 || vo.getTitle().equals(" ")) {
 			return null;
 		}
@@ -126,11 +125,11 @@ public class BoardController {
 		model.addAttribute("update", service.update(vo));
 		rttr.addAttribute("bno", vo.getBno());
 		rttr.addAttribute("cate", vo.getCate());
-		return "redirect:/board/read";
+		return "redirect:/board/read/{cate}";
 	}
-	@GetMapping("delete")
-	public String delete(int bno) {
-		List<BoardAttachVO> attachList = service.getAttachList(bno);
+	@GetMapping("delete/{cate}")
+	public String delete(int bno,@PathVariable int cate) {
+		List<BoardAttachVO> attachList = service.getAttachList(bno,cate);
 		if(service.delete(bno)==1) {
 			deleteFile(attachList);
 		}
@@ -140,18 +139,26 @@ public class BoardController {
 	//CRUD
 //================================================================
 	//Upload
-	@GetMapping(value="getAttachList",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	
+	
+//	@GetMapping(value="getAttachList",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+//	@ResponseBody
+//	public ResponseEntity<List<BoardAttachVO>> getAttachList (int bno,@RequestParam(value = "in", required=false) List<Integer> in){
+//		return new ResponseEntity<>(service.getAttachList(bno),HttpStatus.OK);
+//	}
+	
+	
+	@GetMapping(value="read/{cate}/fileGetAttachList",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<BoardAttachVO>> getAttachList (int bno,@RequestParam(value = "in", required=false) List<Integer> in){
-		return new ResponseEntity<>(service.getAttachList(bno),HttpStatus.OK);
+	public ResponseEntity<List<BoardAttachVO>> readFileGetAttachList (@PathVariable int cate,int bno,@RequestParam(value = "in", required=false) List<Integer> in){
+		return new ResponseEntity<>(service.getAttachList(bno,cate),HttpStatus.OK);
 	}
-	@GetMapping(value="fileGetAttachList",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value="update/{cate}/fileGetAttachList",produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<BoardAttachVO>> fileGetAttachList (int bno,@RequestParam(value = "in", required=false) List<Integer> in){
-		return new ResponseEntity<>(service.getAttachList(bno),HttpStatus.OK);
+	public ResponseEntity<List<BoardAttachVO>> updateFileGetAttachList (@PathVariable int cate,int bno,@RequestParam(value = "in", required=false) List<Integer> in){
+		return new ResponseEntity<>(service.getAttachList(bno,cate),HttpStatus.OK);
 	}
 	
-
 	@PostMapping("/deleteFilee1")
 	@ResponseBody
 	public void deleteFile(List<BoardAttachVO> attachList) {

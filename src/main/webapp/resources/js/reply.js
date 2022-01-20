@@ -12,20 +12,18 @@ $(document).ready(function() {
 	$(".active").css({'color':'#fff','font-size':'bold'});
 	
 	var bnoValue = $("#bno").val();	// 게시판 번호
-	var rnoValue = $("#rno").val();	// 게시판 번호
-							// .val() : 선택된 id(bno)의 value값을 가져옴.
-	// $("#bno").val(1); 위와 동일
 	var replyUL=$(".chat");
-	var replyer = $("#who").val();
-	var replyerId = $("#whoId").val();
-	var boardHost = $("#writer").text();
+	var replyer = $("#who").val();       //댓글쓸사람
+	var replyerId = $("#whoId").val();   //댓글쓸사람id
+	var boardHost = $("#writer").text(); //게시판글쓴이
 
 	var header = $("meta[name='_csrf_header']").attr("content");
 	var token = $("meta[name='_csrf']").attr("content");
-	var number=1;
- $(document).ajaxSend(function(e, xhr, options){
-        xhr.setRequestHeader(header, token);
-    });  
+	//CSRF AJAX 사용
+	$(document).ajaxSend(function(e, xhr, options){
+	        xhr.setRequestHeader(header, token);
+	    });  
+
 	console.log(bnoValue);
 	
 
@@ -52,9 +50,9 @@ $(document).ready(function() {
 					
 					str+="<li class='reply_view'>";
 					if(list[i].redepth>0){
-						str+="<div style='display:flex;margin-left:40px;'>";
+						str+="<div id='comment' style='display:flex;margin-left:40px;'>";
 					} else{
-						str+="<div style='display:flex;'>";
+						str+="<div id='comment' style='display:flex;'>";
 					}
 					
 					str+="<div style='margin-left: 30px;display:flex;'>";
@@ -92,7 +90,8 @@ $(document).ready(function() {
 									alert("error.....");
 								}					 
 							)
-						} else if(list[i+1].redepth!=1){
+						} 
+						else if(list[i+1].redepth==0){
 							var tRno=list[i].rno;
 							replyService.remove( 
 								tRno,		
@@ -114,71 +113,9 @@ $(document).ready(function() {
 				
 				
 			replyUL.html(str);
-			
-//			$("#reChat").on("click",function(e) {
-//				e.preventDefault();
-//				var rno=$(".rnoColumn").html();
-//				var inBox=$("#inputBox");
-//				var reBtn=$("#reRegisterBtn");
-//				
-//				$("#rcIn").css('display','flex');
-//				$("#regiBox").css('display','block');
-//				
-//				inBox.html("<input style='outline:none; width: 500px;margin: 8px 0 0 85px;' type='text' name=reply value='' placeholder='대댓글을 입력해 주세요'>")
-//				
-//				$('.close').click(function(){if(confirm("취소 하시겠습니까?")){showList(1);}})
-//			
-//				reBtn.on("click", function(e) {
-//					var reVal = $("#inputBox").find("input");
-//					var reply = {
-//							reply : reVal.val(),
-//							replyer : replyer,
-//							bno : bnoValue,
-//							reparent : rno,
-//							redepth : 1
-//						};
-//					if(reVal.val()=="" || reVal.val().length==0){alert("대댓글을 입력해주세요."); return false;}
-//						if (confirm("등록 하시겠습니까?")){
-//							replyService.add(reply, function(result) {reVal.val("");showList(1);})
-//							
-//							} else{reVal.val("");};
-//					})
-//				});
-//						
-//									
-//			$("#ModBtn").on("click", function(e) {
-//				e.preventDefault();
-//				var rno=$(".rnoColumn").html();
-//				var par=$(".reply");
-//				var disa=$(".right");
-//				var bBtn=$(".blindBtn");
-//				var cBtn=$("closer");
-//				var reply=par.html();
-//				disa.css({'display':'none'});
-//				bBtn.css({'display':'block'});
-//				cBtn.css({'display':'block'});
-//				par.contents().unwrap().wrap("<input style='width: 185px;margin: 0 15px;' type='text' class='modInput' name=reply value='"+reply+"'>");
-//				cBtn.click(function(){
-//					if (confirm("취소 하시겠습니까?")){
-//						showList(1);
-//					}
-//				})
-//				bBtn.on("click", function(e) {
-//					var ModReplypar=$(".modInput").val();
-//					var reply = {rno:rno, reply :ModReplypar};
-//					if(ModReplypar.length==0 || ModReplypar==" "){alert("댓글을 입력해주세요."); return false;}
-//						if (confirm("수정 하시겠습니까?")){
-//					replyService.update(reply, function(result) {
-//						showList(1);
-//					});
-//					}
-//				});
-//			});
-					
 			}) 
 	} 
 	
-	console.log(number);
 	var replyT = $("#reply");				
 	var RegisterBtn = $("#RegisterBtn");
 	
@@ -204,41 +141,42 @@ $(document).ready(function() {
 		
 		
 		$(".chat").on("click", "#RemoveBtn", function(e) {
-					var rno=$(this).siblings("span").html();
-					var dept=$(this).siblings("i").html();
-					var par=$(this).parent().parent().parent().next("li").find("div").css('margin-left')
-					console.log(par!="0px");
-				if (confirm("삭제 하시겠습니까?")){
-					 if (dept==1 || par!="40px"){
-						replyService.remove( 
-								rno,		
-								replyer,		 
-								function(count){ 
-								console.log(count);
-									if(count === "success"){
-										showList(1);
-									}
-								},				 
-								function(error){	 
-									alert("error.....");
-								}					 
-							)
-						} else if(dept==0){
-						replyService.delUpdate(rno, function(result) {
-							showList(1);
-						});
-					}
-					}
-						return false;
+			var rno=$(this).siblings("span").html();
+			var dept=$(this).siblings("i").html();
+			var par=$(this).closest("li").next("li").find("div").css('margin-left')
+			if (confirm("삭제 하시겠습니까?")){
+				if (dept!=0 || par!="40px"){
+					replyService.remove( 
+						rno,		
+						replyer,		 
+						function(count){ 
+							if(count === "success"){
+								showList(1);
+							}
+						},				 
+						function(error){	 
+							alert("error.....");
+						}
+					)
+				} else if(dept==0){replyService.delUpdate(rno, function(result) {showList(1);});}
+			}
+			return false;
 		})
 		
 		
 		$(".chat").on("click", "#reChat", function(e) {
 			e.preventDefault();
 			var i=1;
-			var parNxt=$(this).parent().parent().parent().next("li").find("div")
-			var parON=$(this).parent().parent().parent().next("li").find("div").css('margin-left');
+			var rno=$(this).siblings("span").html();
+			var parNxt=$(this).closest("li").next("li").find("div");
+			var cmtP=$(this).closest("#comment").next('p');
+			var parON=parNxt.css('margin-left');
 			var parTN=parNxt.parent().next("li").find("div").css('margin-left');
+			var inBox=cmtP.find("span");
+			var reBtn=cmtP.find("#reRegisterBtn");
+			
+			cmtP.css('display','flex')
+			cmtP.find("i").css('display','block');
 			
 			if(parON=="40px"){
 				if(parTN!="40px"){
@@ -249,13 +187,6 @@ $(document).ready(function() {
 					return false;
 				}
 			}
-			
-			var rno=$(this).siblings("span").html();
-			var inBox=$(this).parent().parent().next('p').find("span");
-			var reBtn=$(this).parent().parent().next('p').find("i").find("#reRegisterBtn");
-			
-			$(this).parent().parent().next('p').css('display','flex')
-			$(this).parent().parent().next('p').find("i").css('display','block');
 			
 			inBox.html("<input style='outline:none; width: 500px;margin: 8px 0 0 85px;' type='text' name=reply value='' placeholder='대댓글을 입력해 주세요'>")
 			
@@ -270,43 +201,38 @@ $(document).ready(function() {
 						redepth : i
 					};
 				if(reVal.val()=="" || reVal.val().length==0){alert("대댓글을 입력해주세요."); return false;}
-					if (confirm("등록 하시겠습니까?")){
-						replyService.add(reply, function(result) {reVal.val("");showList(1);})
-						
-						} else{reVal.val("");};
+				if (confirm("등록 하시겠습니까?")){replyService.add(reply, function(result) {reVal.val("");showList(1);})}
+				else{reVal.val("");};
 			})
 		});
 
-		
 		$(".chat").on("click", "#ModBtn", function(e) {
 			e.preventDefault();
+			var par=$(this).parent("div");
 			var rno=$(this).siblings("span").html();
-			var par=$(this).parent("div").siblings("div").find("i");
-			var disa=$(this).parent("div");
-			var bBtn=$(this).parent("div").siblings("span");
-			var cBtn=$(this).parent("div").siblings("i");
-			var reply=par.html();
-			disa.css({'display':'none'});
+			var parD=par.siblings("div").find("i");
+			var bBtn=par.siblings("span");
+			var cBtn=par.siblings("i");
+			var reply=parD.html();
+			
+			par.css({'display':'none'});
 			bBtn.css({'display':'block'});
 			cBtn.css({'display':'block'});
-			par.contents().unwrap().wrap("<input style='width: 185px;margin: 0 15px;' type='text' class='modInput' name=reply value='"+reply+"'>");
+			
+			parD.contents().unwrap().wrap("<input style='width: 185px;margin: 0 15px;' type='text' class='modInput' name=reply value='"+reply+"'>");
 			cBtn.click(function(){
 				if (confirm("취소 하시겠습니까?")){
 					showList(1);
 				}
 			})
 			bBtn.on("click", function(e) {
-			var ModReplypar=$(".modInput").val();
-			var reply = {rno:rno, reply :ModReplypar};
-			if(ModReplypar.length==0 || ModReplypar==" "){alert("댓글을 입력해주세요."); return false;}
-				if (confirm("수정 하시겠습니까?")){
-			replyService.update(reply, function(result) {
-				showList(1);
+				var ModReplypar=$(".modInput").val();
+				var reply = {rno:rno, reply :ModReplypar};
+				if(ModReplypar.length==0 || ModReplypar==" "){alert("댓글을 입력해주세요."); return false;}
+				if (confirm("수정 하시겠습니까?")){replyService.update(reply, function(result) {showList(1);});
+				}
 			});
-			}
 		});
-		});
-		
 		
 	})
 

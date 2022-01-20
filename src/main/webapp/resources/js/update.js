@@ -8,7 +8,8 @@ $(document).ready(function(){
 		
 		(function(){
 				var bno=$("#bno").val();
-		$.getJSON("fileGetAttachList",{bno:bno},function(arr){
+				var cate=$("input[name='cate']").val();
+		$.getJSON(cate+"/fileGetAttachList",{bno:bno},function(arr){
 		if(arr.length==0){console.log("aaa");$(".fUploadDiv").find("input").css('display','inline-block');}
 		var str="";
 		$(arr[0]).each(function(i,attach){
@@ -244,7 +245,8 @@ $(document).ready(function(){
 	
 	(function(){
 			var bno=$("#bno").val();
-			$.getJSON("fileGetAttachList",{bno:bno},function(arr){
+			var cate=$("input[name='cate']").val();
+			$.getJSON(cate+"/fileGetAttachList",{bno:bno},function(arr){
 				console.log("arr.length : "+arr.length)
 			if(arr.length!=2){console.log("aaa");$(".sUploadDiv").find("input").css('display','inline-block');}
 			var str="";

@@ -109,7 +109,7 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.delete(bno);
 	}
 
-	public List<BoardAttachVO> getAttachList(int bno) {
+	public List<BoardAttachVO> getAttachList(int bno, int cate) {
 		return attachMapper.findByBno(bno);
 	}
 	

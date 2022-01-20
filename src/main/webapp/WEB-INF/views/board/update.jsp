@@ -111,7 +111,7 @@
             </div>
             <!-- 컨텐츠 영역 -->
             <div class="containers">
-             <form role='form' method="post" action="update">
+             <form role='form' method="post" action="/board/update">
             	<div>
 		            <div>
 		            	<h2 style="margin-bottom: 30px;">게시물 수정</h2>
@@ -656,7 +656,7 @@
 		if($("input[name='allKeyword']").val().length!=0){$(".pager").css('opacity','0');}
 		$(".cateInfo").click(function(){$(".cateTxt").show(500)});
 		$("#close").click(function(){$(".cateTxt").hide(500)});
-		if($("#pin").val()==1){$("#fixedTop").prop("checked", true);};
+		if($("#pin").val()==1){$("#fixedTop").prop("checked", true);$("#fixedTop").val("1");};
         $('#fixedTop').click(function(){
 	        var checked=$("#fixedTop").is(':checked');
 	        if(checked){$("#fixedTop").val("1")}else{ $("#fixedTop").val("0")}

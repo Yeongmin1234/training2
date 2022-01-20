@@ -207,7 +207,7 @@
 											N
 			                            </span>
 		                            </c:if>
-	                            	<a href="/board/read?cate=${list.cate}&bno=${list.bno}">${list.title}</a>[${list.replyCnt}]
+	                            	<a href="/board/read/${list.cate}?bno=${list.bno}">${list.title}</a>[${list.replyCnt}]
 	                            	<c:if test="${list.file==1}">
 		                            	<span><img src="/resources/images/clip.png" style="width: 16px;height: 16px;margin: 10px;"></span>
 		                            </c:if>
